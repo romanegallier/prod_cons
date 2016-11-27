@@ -5,15 +5,13 @@ import java.util.concurrent.locks.Condition;
 import jus.poc.prodcons.*;
 public class ProdCons implements Tampon {
 	
-	private int taille;// taille du buffer
-	private Message tampon[];// buffer
-	private int index_lecture;// indice de la zone du tampon ou il faut lire
-	private int index_ecriture;// indice de la zone du tamtpon ou il faut ecrire
-	private int enAttente;// nombre de message present dans le tampon
+	private int taille;
+	private Message tampon[];
+	private int index_lecture;
+	private int index_ecriture;
+	private int enAttente;
 	private Condition notEmpty, notFull;
 	
-	
-	// constructeur 
 	public ProdCons(int taille){
 		this.taille=taille;
 		this.tampon=new Message[taille];
