@@ -1,4 +1,4 @@
-package projet_prod_cons ;
+package prodcons.v2 ;
 
 import jus.poc.prodcons.*;
 
