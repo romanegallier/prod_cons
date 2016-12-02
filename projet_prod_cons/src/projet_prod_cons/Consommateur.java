@@ -43,7 +43,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 
 	@Override
 	public void run() {
-		Message m= new MessageX(null, 0, "", 0);
+		Message m= new MessageX(null, 0, "", null);
 		int temp_attente;
 		while (true ){
 			try {

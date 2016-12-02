@@ -1,5 +1,7 @@
 package projet_prod_cons;
 
+import java.util.Date;
+
 import jus.poc.prodcons.*;
 
 public class Producteur extends Acteur implements _Producteur  {
@@ -43,7 +45,7 @@ public class Producteur extends Acteur implements _Producteur  {
 		
 		for (int i=0; i <nbMessage; i++){
 			System.out.println(this.toString()+nbMessage +":"+i);
-			MessageX m = new MessageX(this, i, "patate", 0);
+			MessageX m = new MessageX(this, i, "patate", new Date());
 			try {
 				tampon.put(this, m);
 			} catch (InterruptedException e) {
