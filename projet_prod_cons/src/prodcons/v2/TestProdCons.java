@@ -68,7 +68,7 @@ public class TestProdCons  extends Simulateur {
 	@Override
 	protected void run() throws Exception {
 
-		boolean b= true;
+		
 		for (int i=0;i<nb_prod;i++){
 			if (p.get(i)==null) System.out.println("petit probleme\n");
 			else System.out.println(p.get(i).toString());

@@ -1,4 +1,4 @@
-package projet_prod_cons;
+package prodcons.v3;
 
 import jus.poc.prodcons.*;
 
@@ -7,11 +7,14 @@ public class Producteur extends Acteur implements _Producteur  {
 	private int nbMessage;
 	private Aleatoire temp_prod;
 	private Tampon tampon;
+	private Observateur obs;
 	
 	protected Producteur(int type, Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement,Tampon tampon) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		obs= observateur;
+		
 		nbMessage=Aleatoire.valeur(3,2);// TODO a changer
 		temp_prod= new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.tampon=tampon;
@@ -40,11 +43,27 @@ public class Producteur extends Acteur implements _Producteur  {
 
 	@Override
 	public void run() {
-		((ProdCons) tampon).nv_prod();
+		
 		for (int i=0; i <nbMessage; i++){
 			System.out.println(this.toString()+nbMessage +":"+i);
+			// On produit le message
 			MessageX m = new MessageX(this, i, "patate", 0);
+			
+//TODO A CHANGER DE PARTOUT
+			// On attend pour simuler le temp de prod
+			int tempAttente= temp_prod.next();
+			//On informe l'observateur
 			try {
+				obs.productionMessage(this, m, tempAttente);
+				sleep(tempAttente);
+			} catch (InterruptedException | ControlException e) {
+				System.out.println("J'ai pas reussi a attendre ...\n");
+				e.printStackTrace();
+			}
+
+			
+			try {
+				obs.depotMessage(this, m);
 				tampon.put(this, m);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -53,16 +72,9 @@ public class Producteur extends Acteur implements _Producteur  {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
-			int tempAttente= temp_prod.next();
-			try {
-				sleep(tempAttente);
-			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
-				e.printStackTrace();
-			}
 			
+						
 		}
-		((ProdCons) tampon).fin_prod();
 		
 	}
 	

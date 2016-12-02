@@ -1,4 +1,4 @@
-package prodcons.v2;
+package prodcons.v3;
 
 
 
@@ -61,5 +61,7 @@ public class ProdCons implements Tampon {
 	public int taille() {
 		return this.taille;
 	}
+
+	
 
 }
