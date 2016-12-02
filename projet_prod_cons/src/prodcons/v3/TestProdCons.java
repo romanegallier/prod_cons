@@ -1,4 +1,4 @@
-package prodcons.v2;
+package prodcons.v3;
 
 import java.util.ArrayList;
 
@@ -16,35 +16,44 @@ public class TestProdCons  extends Simulateur {
 	public TestProdCons(Observateur observateur) {
 		super(observateur);
 		this.obs=observateur;
+		try {
+			obs.init(nb_prod, nb_conso, taille_tampon);
+		} catch (ControlException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		
-		// TODO Auto-generated method stub
-		//corps du programme principal
+		
 		//TODO recuperer l nombre de producteur 
 		
 		//TODO recuperer nombre conso
 		
 		
-	//TODO recuperer taille du tampon 
+		//TODO recuperer taille du tampon 
+		
+		
 		
 		tampon = new ProdCons(taille_tampon);
 		
 		
-		Acteur prod;
-		p= new ArrayList<Producteur>();// posse possiblement probleme comme initialisation
+		
+		Producteur prod;
+		p= new ArrayList<Producteur>();
 		int moyenneTempsDeTraitement= 10;//TODO a changer
 		int deviationTempsDeTraitement =5;//TODO a changer
 		for (int i=0;i<=nb_prod;i++){
 		
 			try {
 				prod=new Producteur(Producteur.Prod(), obs, moyenneTempsDeTraitement, deviationTempsDeTraitement, tampon);
-				p.add((Producteur)prod); 
+				p.add(prod);
+				obs.newProducteur( prod);
 			} catch (ControlException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 		
 			}
-		
+			
 			
 		
 		}
@@ -55,6 +64,7 @@ public class TestProdCons  extends Simulateur {
 		for (int i=0;i<=nb_prod;i++){
 			try {
 				c.add(new Consommateur(Consommateur.Cons(), obs, moyenneTempsDeTraitement, deviationTempsDeTraitement, tampon));
+				obs.newConsommateur(c.get(i));
 			} catch (ControlException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

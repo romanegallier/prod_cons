@@ -1,6 +1,5 @@
 package projet_prod_cons;
 
-import java.util.concurrent.locks.Condition;
 
 import jus.poc.prodcons.*;
 public class ProdCons implements Tampon {
@@ -11,6 +10,8 @@ public class ProdCons implements Tampon {
 	private int index_ecriture;// indice de la zone du tamtpon ou il faut ecrire
 	private int enAttente;// nombre de message present dans le tampon
 	//private Condition notEmpty, notFull;
+	private int nb_prod_alive;
+	private int  num=0;
 	
 	
 	// constructeur 
@@ -20,8 +21,19 @@ public class ProdCons implements Tampon {
 		this.index_lecture=0;
 		this.index_ecriture=0;
 		this.enAttente=0;
+		this.nb_prod_alive=0;
 	}
 
+	public void nv_prod (){
+		nb_prod_alive ++;
+	}
+	
+	public void fin_prod(){
+		nb_prod_alive --;
+	}
+	public boolean cons_should_die (){
+		return (nb_prod_alive==0) && (enAttente==0);
+	}
 	@Override
 	public int enAttente() {
 		return this.enAttente;
@@ -44,7 +56,8 @@ public class ProdCons implements Tampon {
 		while (enAttente==taille){
 			/*notFull.*/wait();
 		}
-		
+		num++;
+		((MessageX)arg1).set_num(num);
 		tampon[index_ecriture]= arg1;
 		index_ecriture= (index_ecriture+1)%taille;
 		enAttente++;

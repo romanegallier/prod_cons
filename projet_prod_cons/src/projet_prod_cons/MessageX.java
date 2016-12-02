@@ -7,12 +7,14 @@ import jus.poc.prodcons.*;
 public class MessageX implements Message{
 	private Producteur  source;
 	private int numero;
+	private int numero_bis;
 	private String contennu;
 	private Date date;
 	
 	public String toString (){
 		
-		return "["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] : "+"Source : "+source.toString()+"\tNumero : "+String.valueOf(numero)+"\n\t Contenu : "+contennu+ "\n";
+		return "["+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"] : "+"Source : "+source.toString()+"\tNumero : "+String.valueOf(numero)+"\n\t Contennu : "+contennu  + "\n\tmessage n°" + String.valueOf(numero_bis) + "\n";
+
 		//TODO 
 	}
 	public MessageX(Producteur p , int n, String contennu,Date date ){
@@ -20,6 +22,11 @@ public class MessageX implements Message{
 		this.numero=n;
 		this.contennu=contennu;
 		this.date=date;
+		this.numero_bis=0;
+	}
+	
+	public void set_num (int n){
+		numero_bis=n;
 	}
 	
 	
