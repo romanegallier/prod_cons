@@ -56,7 +56,7 @@ public class Producteur extends Acteur implements _Producteur  {
 			}
 			
 			try {
-				tampon.put(this, m);
+				tampon.put(this, m); //TODO à changer, random
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
