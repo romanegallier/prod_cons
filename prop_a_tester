@@ -1,0 +1,14 @@
+-Buffer borné
+-> mettre plein de producteurs et un seul consommateur pour voir que les prods sont bloqués par la taille du buffer
+
+-les processus commutent de façon régulière
+-> je sais pas comment faire dans l'immédiat...
+
+-La loi aléatoire est bien testée
+-> mettre des valeurs significatives dans les temps moyens de traitement. Eventuellement afficher l'heure de production, dépot et consommation du message 
+
+-les messages sont retirés du tampon dans l'ordre où ils ont été déposés :
+->heure de dépot, heure de consommation
+
+l'application ne se termine que lorsque tous les producteurs ont effectués leurs productions et que tous les messages produits ont été consommés et traités par des consommateurs.
+->afficher l'état du buffer et des producteurs lors de la terminaison des consommateurs.

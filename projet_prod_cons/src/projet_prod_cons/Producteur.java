@@ -47,7 +47,7 @@ public class Producteur extends Acteur implements _Producteur  {
 			System.out.println(this.toString()+nbMessage +":"+i);
 			MessageX m = new MessageX(this, i, "patate", new Date());
 			try {
-				tampon.put(this, m);
+				tampon.put(this, m); //TODO à changer, random
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
