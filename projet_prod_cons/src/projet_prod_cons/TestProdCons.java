@@ -53,7 +53,7 @@ public class TestProdCons  extends Simulateur {
 			c= new  ArrayList<Consommateur>();
 			for (int i=0;i<=nbCons;i++){
 				try {
-					c.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenConsommation, tampon));
+					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon));
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

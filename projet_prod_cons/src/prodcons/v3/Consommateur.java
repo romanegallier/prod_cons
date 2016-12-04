@@ -1,4 +1,6 @@
-package prodcons.v3 ;
+package projet_prod_cons ;
+
+import java.util.Date;
 
 import jus.poc.prodcons.*;
 
@@ -7,14 +9,12 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	private int nbMessage;
 	private Tampon tampon;
 	private Aleatoire temp_traitement;
-	private Observateur obs;
 
-	protected Consommateur(int type, Observateur observateur, int moyenneTempsDeTraitement,
+	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO verifier le type
 		this.tampon=tampon;
-		this.obs= observateur;
 		this.nbMessage=0;
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		
@@ -45,14 +45,14 @@ public class Consommateur extends Acteur implements _Consommateur  {
 
 	@Override
 	public void run() {
-		Message m= new MessageX(null, 0, "", 0);
+		MessageX m = new MessageX(null,0,null,null);
 		int temp_attente;
-		while (true ){
+		while (!(((ProdCons)tampon).cons_should_die())){
 			try {
 			
-				m=tampon.get(this);
-				obs.retraitMessage(this, m);
-				System.out.println("m:"+m.toString());
+				m=(MessageX) tampon.get(this);
+				m.set_date_retrait(new Date());
+				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -69,20 +69,27 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 			temp_attente=this.temp_traitement.next();
 			try {
-				obs.consommationMessage(this, m, temp_attente);
 				sleep(temp_attente);
-			} catch (InterruptedException | ControlException e) {
+			} catch (InterruptedException e) {
 				System.out.println("J'ai pas reussi a attendre ...\n");
 				e.printStackTrace();
 			}
 			
+			m.set_date_consommation(new Date());
+			
 		}
+		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 	public static int Cons (){
 		return Acteur.typeConsommateur;
 	}
 
 	public String toString (){
-		return "Consommateur "+this.identification()+"\n";
+		return "Consommateur "+this.identification();
+	}
+	
+	public void je_parle(String message)
+	{
+		System.out.println(MessageX.Format_HeureMinuteSeconde(new Date()) +this.toString()+"\t"+ message);
 	}
 }

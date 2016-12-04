@@ -50,6 +50,7 @@ public class ProdCons implements Tampon {
 		((MessageX)m).set_num2(num2);
 		index_lecture= (index_lecture+1)%taille;
 		enAttente --;
+		System.out.println("Je get le message " + num2);
 		/*notFull.signal()*/ notifyAll();
 		return m;
 	}
@@ -64,12 +65,40 @@ public class ProdCons implements Tampon {
 		tampon[index_ecriture]= arg1;
 		index_ecriture= (index_ecriture+1)%taille;
 		enAttente++;
+		System.out.println("Je put le message "+num);
 		/*notEmpty.signal()*/ notifyAll();
 	}
 
 	@Override
 	public int taille() {
 		return this.taille;
+	}
+	
+	@Override
+	public String toString()
+	{
+		String res = "[";
+		char occupe = 'X';
+		char libre = ' ';
+		if (index_lecture > index_ecriture)
+		{
+			occupe = ' ';
+			libre = 'X';
+		}
+		
+		for(int i = 0; i < index_lecture ; i++)
+		{
+			res += libre + ",";
+		}
+		for(int i = index_lecture; i < index_ecriture ; i++)
+		{
+			res += occupe +",";
+		}
+		for (int i = index_ecriture ; i < taille ; i++)
+		{
+			res += libre + ",";
+		}
+		return res += "]";
 	}
 
 }

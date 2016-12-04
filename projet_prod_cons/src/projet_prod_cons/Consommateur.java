@@ -45,12 +45,13 @@ public class Consommateur extends Acteur implements _Consommateur  {
 
 	@Override
 	public void run() {
-		Message m= new MessageX(null, 0, "", null);
+		MessageX m = new MessageX(null,0,null,null);
 		int temp_attente;
 		while (!(((ProdCons)tampon).cons_should_die())){
 			try {
 			
-				m=tampon.get(this);
+				m=(MessageX) tampon.get(this);
+				m.set_date_retrait(new Date());
 				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 			} catch (InterruptedException e) {
@@ -74,8 +75,10 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				e.printStackTrace();
 			}
 			
+			m.set_date_consommation(new Date());
+			
 		}
-		System.out.println("Je suis le "+this.toString()+"et je me meurt ... arghhhh\n");
+		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 	public static int Cons (){
 		return Acteur.typeConsommateur;
