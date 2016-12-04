@@ -37,9 +37,8 @@ public class TestProdCons  extends Simulateur {
 			Acteur prod;
 			p= new ArrayList<Producteur>();
 			for (int i=0;i<nbProd;i++){
-				System.out.println("je suis la\n");
 				try {
-					prod=new Producteur(Producteur.Prod(), obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon);
+					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon);
 					p.add((Producteur)prod); 
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
@@ -54,7 +53,7 @@ public class TestProdCons  extends Simulateur {
 			c= new  ArrayList<Consommateur>();
 			for (int i=0;i<=nbCons;i++){
 				try {
-					c.add(new Consommateur(Consommateur.Cons(), obs, tempsMoyenProduction, deviationTempsMoyenConsommation, tampon));
+					c.add(new Consommateur(obs, tempsMoyenProduction, deviationTempsMoyenConsommation, tampon));
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

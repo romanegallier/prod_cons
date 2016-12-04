@@ -10,7 +10,7 @@ public class Producteur extends Acteur implements _Producteur  {
 	private Aleatoire temp_prod;
 	private Tampon tampon;
 	
-	protected Producteur(int type, Observateur observateur, int moyenneTempsDeTraitement,
+	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement,Tampon tampon) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
@@ -44,10 +44,11 @@ public class Producteur extends Acteur implements _Producteur  {
 	public void run() {
 		((ProdCons) tampon).nv_prod();
 		for (int i=0; i <nbMessage; i++){
-			System.out.println(this.toString()+nbMessage +":"+i);
+			je_parle("je produis le message "+(i+1) +" sur "+nbMessage);
 			MessageX m = new MessageX(this, i, "patate", new Date());
 			try {
 				tampon.put(this, m); //TODO à changer, random
+				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -73,6 +74,11 @@ public class Producteur extends Acteur implements _Producteur  {
 	}
 	
 	public String toString (){
-		return "Producteur "+this.identification()+"\n";
+		return "Producteur "+this.identification();
+	}
+	
+	public void je_parle(String message)
+	{
+		System.out.println(MessageX.Format_HeureMinuteSeconde(new Date()) +this.toString()+"\t"+ message);
 	}
 }

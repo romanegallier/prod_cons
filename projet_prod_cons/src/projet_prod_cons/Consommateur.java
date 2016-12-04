@@ -1,5 +1,7 @@
 package projet_prod_cons ;
 
+import java.util.Date;
+
 import jus.poc.prodcons.*;
 
 public class Consommateur extends Acteur implements _Consommateur  {
@@ -8,9 +10,9 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	private Tampon tampon;
 	private Aleatoire temp_traitement;
 
-	protected Consommateur(int type, Observateur observateur, int moyenneTempsDeTraitement,
+	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
-		super(type, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
+		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO verifier le type
 		this.tampon=tampon;
 		this.nbMessage=0;
@@ -49,7 +51,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=tampon.get(this);
-				System.out.println("m:"+m.toString());
+				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -80,6 +82,11 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	}
 
 	public String toString (){
-		return "Consommateur "+this.identification()+"\n";
+		return "Consommateur "+this.identification();
+	}
+	
+	public void je_parle(String message)
+	{
+		System.out.println(MessageX.Format_HeureMinuteSeconde(new Date()) +this.toString()+"\t"+ message);
 	}
 }
