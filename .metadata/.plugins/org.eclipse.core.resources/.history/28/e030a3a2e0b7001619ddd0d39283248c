@@ -1,0 +1,45 @@
+package prodcons.v2;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jus.poc.prodcons.*;
+
+public class Semaphore {
+//dkrhgm
+	int compteur;
+	ArrayList <Acteur> EnAttente;
+	
+	public Semaphore (int compteur){
+		this.compteur= compteur;
+		EnAttente= new ArrayList<Acteur>();// Acteur n'est peux etre pas le choix le plus inteligent
+	}
+	
+	public synchronized  void P(Acteur a){
+		compteur --;
+		if (compteur <0) {
+			// no more free resources
+			//put(myself,En attente)
+			EnAttente.add(a);
+			//suspend();
+			try {
+				a.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+		
+	public synchronized void V(){
+		compteur++;
+		if (compteur <=0){
+			//at least 1 waiting process
+			Acteur p=EnAttente.get(0);
+			EnAttente.remove(0);
+			p.notify();
+			
+		}
+	}
+	
+}

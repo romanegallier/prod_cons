@@ -46,6 +46,15 @@ public class Producteur extends Acteur implements _Producteur  {
 		for (int i=0; i <nbMessage; i++){
 			je_parle("je produis le message "+(i+1) +" sur "+nbMessage);
 			MessageX m = new MessageX(this, i, "patate", new Date());
+			int tempAttente= temp_prod.next();
+			
+			try {
+				sleep(tempAttente);
+			} catch (InterruptedException e) {
+				System.out.println("J'ai pas reussi a attendre ...\n");
+				e.printStackTrace();
+			}
+			
 			try {
 				tampon.put(this, m); //TODO à changer, random
 				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
@@ -56,13 +65,8 @@ public class Producteur extends Acteur implements _Producteur  {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
-			int tempAttente= temp_prod.next();
-			try {
-				sleep(tempAttente);
-			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
-				e.printStackTrace();
-			}
+			
+			
 			
 		}
 		((ProdCons) tampon).fin_prod();
