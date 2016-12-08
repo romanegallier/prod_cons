@@ -1,6 +1,7 @@
 package projet_prod_cons;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import jus.poc.prodcons.*;
 
@@ -38,16 +39,13 @@ public class TestProdCons  extends Simulateur {
 			p= new ArrayList<Producteur>();
 			for (int i=0;i<nbProd;i++){
 				try {
-					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon);
+					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenDeProduction, deviationNombreMoyenDeProduction);
 					p.add((Producteur)prod); 
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 			
 				}
-			
-				
-			
 			}
 			
 			c= new  ArrayList<Consommateur>();
@@ -79,7 +77,35 @@ public class TestProdCons  extends Simulateur {
 	}
 
 	public static void main(String[] args) {
-		new TestProdCons(new Observateur(),"option.xml").start();
+		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml");
+		
+		tpd.start();
+		
+		//On s'arrête jusqu'à la fin de chaque consommateur (qui se produit après la fin de chaque producteur... au pire on peut aussi attendre la fin de chaque producteur... ce qu'on va faire)
+
+		for(Producteur producteur : tpd.p)
+		{
+			try {
+				producteur.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		for(Consommateur consommateur : tpd.c)
+		{
+			try {
+				consommateur.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
+		//TODO tests !
+		((ProdCons) tpd.tampon).tests_temporels(new Date());
 	}
 	
 	
