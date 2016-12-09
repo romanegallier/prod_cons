@@ -78,7 +78,16 @@ public class TestProdCons  extends Simulateur {
 	}
 
 	public static void main(String[] args) {
-
+<<<<<<< HEAD
+		
+		TestProdCons t;
+		t =new TestProdCons(new Observateur(),"option.xml");
+		System.out.println("je suis laswhrdehj \n");
+		
+		t.start();
+		System.out.println("je suis laswhrdehj \n");
+		System.out.println(t.c.get(0).get_message_lu().get(0)+"\n");
+=======
 		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml");
 		
 		tpd.start();
@@ -108,7 +117,7 @@ public class TestProdCons  extends Simulateur {
 		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
 		//TODO tests !
 		((ProdCons) tpd.tampon).tests_temporels(new Date());
-
+>>>>>>> 35bbba2cc2f4d1f91f8540659520f17e4293dfef
 	}
 	
 	

@@ -7,14 +7,17 @@ import jus.poc.prodcons.*;
 public class Producteur extends Acteur implements _Producteur  {
 
 	private int nbMessage;
+	private int nbMessagesProduits;
 	private Aleatoire temp_prod;
 	private Tampon tampon;
 	
 	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement,Tampon tampon) throws ControlException {
+			int deviationTempsDeTraitement,Tampon tampon, int nbMoyenProduction,
+			int deviationNbProduction) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		nbMessage=Aleatoire.valeur(3,2);// TODO a changer
+		nbMessage= new Aleatoire(nbMoyenProduction, deviationNbProduction).next();
+		nbMessagesProduits = 0;
 		temp_prod= new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.tampon=tampon;
 	}
@@ -60,6 +63,7 @@ public class Producteur extends Acteur implements _Producteur  {
 //				je_parle("pre put le tampon a "+tampon.enAttente()+ " message(s) en attente et est de taille "+tampon.taille());
 //				System.out.println("pre put : tampon : " + ((ProdCons) tampon).toString());
 				tampon.put(this, m);
+				nbMessagesProduits++;
 				m.set_date_envoi(new Date());
 //				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
 //				System.out.println("post put : tampon : " + ((ProdCons) tampon).toString());
@@ -82,6 +86,13 @@ public class Producteur extends Acteur implements _Producteur  {
 	public static int Prod (){
 		return Acteur.typeProducteur;
 	}
+	
+	//A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
+	public boolean messages_tous_deposes()
+	{
+		return nbMessage==nbMessagesProduits;
+	}
+	
 	
 	public String toString (){
 		return "Producteur "+this.identification();
