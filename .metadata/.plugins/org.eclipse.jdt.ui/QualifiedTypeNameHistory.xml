@@ -3,17 +3,18 @@
 <fullyQualifiedTypeName name="jus.poc.prodcons._Consommateur"/>
 <fullyQualifiedTypeName name="jus.poc.prodcons._Producteur"/>
 <fullyQualifiedTypeName name="jus.poc.prodcons.Tampon"/>
-<fullyQualifiedTypeName name="jus.poc.prodcons.Message"/>
 <fullyQualifiedTypeName name="jus.poc.prodcons.Acteur"/>
 <fullyQualifiedTypeName name="jus.poc.prodcons.Aleatoire"/>
-<fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="java.util.Date"/>
-<fullyQualifiedTypeName name="projet_prod_cons.MessageX"/>
 <fullyQualifiedTypeName name="projet_prod_cons.Producteur"/>
 <fullyQualifiedTypeName name="projet_prod_cons.Consommateur"/>
 <fullyQualifiedTypeName name="java.awt.List"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.util.concurrent.locks.Condition"/>
 <fullyQualifiedTypeName name="jus.poc.prodcons.Simulateur"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
+<fullyQualifiedTypeName name="prodcons.v3.Test1"/>
+<fullyQualifiedTypeName name="projet_prod_cons.MessageX"/>
+<fullyQualifiedTypeName name="jus.poc.prodcons.Message"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
 </qualifiedTypeNameHistroy>

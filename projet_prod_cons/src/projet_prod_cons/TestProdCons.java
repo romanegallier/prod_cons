@@ -76,10 +76,18 @@ public class TestProdCons  extends Simulateur {
 			System.out.println(c.get(i).toString());
 			c.get(i).start();
 		}
+		System.out.println(".5341.54.635436843");
 	}
 
 	public static void main(String[] args) {
-		new TestProdCons(new Observateur(),"option.xml").start();
+		
+		TestProdCons t;
+		t =new TestProdCons(new Observateur(),"option.xml");
+		System.out.println("je suis laswhrdehj \n");
+		
+		t.start();
+		System.out.println("je suis laswhrdehj \n");
+		System.out.println(t.c.get(0).get_message_lu().get(0)+"\n");
 	}
 	
 	

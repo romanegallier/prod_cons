@@ -1,5 +1,6 @@
 package projet_prod_cons ;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import jus.poc.prodcons.*;
@@ -9,6 +10,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	private int nbMessage;
 	private Tampon tampon;
 	private Aleatoire temp_traitement;
+	private ArrayList <Message> message_lu;
 
 	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
@@ -17,7 +19,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 		this.tampon=tampon;
 		this.nbMessage=0;
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
-		
+		this.message_lu= new ArrayList<Message>();
 	}
 
 	@Override
@@ -52,6 +54,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 				m=(MessageX) tampon.get(this);
 				m.set_date_retrait(new Date());
+				message_lu.add(m);
 				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 			} catch (InterruptedException e) {
@@ -86,6 +89,10 @@ public class Consommateur extends Acteur implements _Consommateur  {
 
 	public String toString (){
 		return "Consommateur "+this.identification();
+	}
+	
+	public ArrayList<Message> get_message_lu() {
+		return message_lu;
 	}
 	
 	public void je_parle(String message)
