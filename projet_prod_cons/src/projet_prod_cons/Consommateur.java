@@ -51,7 +51,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=(MessageX) tampon.get(this);
-				m.set_date_retrait(new Date());
+//				m.set_date_retrait(new Date());
 				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 			} catch (InterruptedException e) {

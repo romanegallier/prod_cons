@@ -59,6 +59,7 @@ public class ProdCons implements Tampon {
 		((MessageX)m).set_num2(num2);
 		index_lecture= (index_lecture+1)%taille;
 		enAttente --;
+		((MessageX) m).set_date_retrait(new Date());
 		System.out.println("Je get le message " + num2);
 		/*notFull.signal()*/ notifyAll();
 		return m;
@@ -75,6 +76,7 @@ public class ProdCons implements Tampon {
 		index_ecriture= (index_ecriture+1)%taille;
 		enAttente++;
 		l_messages.add(arg1);
+		((MessageX) arg1).set_date_envoi(new Date());
 		System.out.println("Je put le message "+num);
 		/*notEmpty.signal()*/ notifyAll();
 	}

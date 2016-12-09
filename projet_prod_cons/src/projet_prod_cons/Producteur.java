@@ -64,7 +64,7 @@ public class Producteur extends Acteur implements _Producteur  {
 //				System.out.println("pre put : tampon : " + ((ProdCons) tampon).toString());
 				tampon.put(this, m);
 				nbMessagesProduits++;
-				m.set_date_envoi(new Date());
+//				m.set_date_envoi(new Date());  ça ne convient pas ici car on est sorti de la section critique
 //				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
 //				System.out.println("post put : tampon : " + ((ProdCons) tampon).toString());
 //				je_parle("post put le tampon a "+tampon.enAttente()+ "messages en attente et est de taille "+tampon.taille() +"\n");
