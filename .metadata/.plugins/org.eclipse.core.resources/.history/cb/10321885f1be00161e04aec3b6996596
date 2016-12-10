@@ -24,6 +24,7 @@ public class Producteur extends Acteur implements _Producteur  {
 		this.tampon=tampon;
 		nbExemplaires = new Aleatoire(nbMoyenExemplaires,deviationNbExemplaires);
 		obs=observateur;
+		
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class Producteur extends Acteur implements _Producteur  {
 			int tempAttente= temp_prod.next();
 			
 			if (m==null)System.out.println("je fait n'importe quoi\n");
-			
+			if 
 			try {
 				obs.productionMessage(this, m, tempAttente);
 				sleep(tempAttente);
