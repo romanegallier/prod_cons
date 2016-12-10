@@ -1,5 +1,6 @@
-package projet_prod_cons ;
+package prodcons.v3 ;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import jus.poc.prodcons.*;
@@ -9,15 +10,18 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	private int nbMessage;
 	private Tampon tampon;
 	private Aleatoire temp_traitement;
+	private Observateur obs;
+	private ArrayList <Message> message_lu;
 
 	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO verifier le type
 		this.tampon=tampon;
+		this.obs= observateur;
 		this.nbMessage=0;
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
-		
+		this.message_lu= new ArrayList<Message>();
 	}
 
 	@Override
@@ -51,7 +55,9 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=(MessageX) tampon.get(this);
-				m.set_date_retrait(new Date());
+				obs.retraitMessage(this, m);
+//				m.set_date_retrait(new Date());
+
 				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 			} catch (InterruptedException e) {
@@ -69,9 +75,13 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 			temp_attente=this.temp_traitement.next();
 			try {
+				obs.consommationMessage(this, m, temp_attente);
 				sleep(temp_attente);
 			} catch (InterruptedException e) {
 				System.out.println("J'ai pas reussi a attendre ...\n");
+				e.printStackTrace();
+			} catch (ControlException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -86,6 +96,10 @@ public class Consommateur extends Acteur implements _Consommateur  {
 
 	public String toString (){
 		return "Consommateur "+this.identification();
+	}
+	
+	public ArrayList<Message> get_message_lu() {
+		return message_lu;
 	}
 	
 	public void je_parle(String message)

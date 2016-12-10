@@ -1,4 +1,4 @@
-package projet_prod_cons;
+package prodcons.v3;
 
 import java.util.Date;
 
@@ -51,19 +51,36 @@ public class MessageX implements Message{
 		date_envoi = date;
 	}
 	
+	public Date get_date_envoi()
+	{
+		return date_envoi;
+	}
+	
 	public void set_date_production(Date date)
 	{
 		date_production = date;
+	}
+	public Date get_date_production()
+	{
+		return date_production;
 	}
 	
 	public void set_date_retrait(Date date)
 	{
 		date_retrait=date;
 	}
+	public Date get_date_retrait()
+	{
+		return date_retrait;
+	}
 	
 	public void set_date_consommation(Date date)
 	{
 		date_consommation = date;
+	}
+	public Date get_date_consommation()
+	{
+		return date_consommation;
 	}
 	
 	public String toString (){
