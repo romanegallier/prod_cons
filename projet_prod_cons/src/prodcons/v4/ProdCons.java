@@ -62,21 +62,30 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
+		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
+		conso.je_parle("j'arrive dans le get");
 		notEmpty.P();
+		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
-		if(((MessageX) m).retrait_possible())
+		int index_temp = index_lecture; //TODO il me semble que j'avais trouvé une meilleure solution pour n'incrémenter qu'une seule fois mais j'ai oublié. Si ça me revient faut changer du coup
+		if(!((MessageX) m).retrait_possible())
 		{
 			synchrone.P();
+			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
 		}
+		conso.je_parle("je suis sorti du premier if");
 		if(((MessageX) m).reveil_necessaire())
 		{
 			synchrone.V();
+			conso.je_parle("J'ai passé le synchrone.V()");
 		}
-		mutex.P(); 
-		index_lecture= (index_lecture+1)%taille;
+		conso.je_parle("J'ai passé le deuxième if");
+		mutex.P();
+		
+		index_lecture= (index_temp+1)%taille; //tous les consommateurs ont mémorisé l'index du message dans index_temp. du coup ça revient à ne l'incrémenter qu'une seule fois.
 		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
-		System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
+		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1));//TODO probleme avec le numero du message
 		
 		mutex.V();
 		notFull.V();
@@ -86,7 +95,8 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
-		System.out.println("J'essaye de mettre un message\n");
+		Producteur pro = ((Producteur) arg0); //TODO à retirer
+		pro.je_parle("J'essaye de mettre un message\n");
 		notFull.P();
 		mutex.P();
 		num++;
@@ -96,10 +106,14 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		System.out.println("Je put le message "+num);
+		((Producteur) arg0).je_parle("Je put le message "+num);
 
 		mutex.V();
-		notEmpty.V();
+		for(int i = 0; i < ((MessageX) arg1).get_nbExemplaires(); i++)
+		{
+			notEmpty.V();
+		}
+		pro.je_parle("j'ai passé notEmpty.V()");
 		synchrone.P(); //v4 dangereux apres le notEmpty je crois
 		synchrone.V();
 	}
