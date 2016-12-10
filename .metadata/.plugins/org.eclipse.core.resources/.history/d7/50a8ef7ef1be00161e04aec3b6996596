@@ -23,7 +23,6 @@ public class Producteur extends Acteur implements _Producteur  {
 		temp_prod= new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.tampon=tampon;
 		nbExemplaires = new Aleatoire(nbMoyenExemplaires,deviationNbExemplaires);
-		obs=observateur;
 		
 	}
 
