@@ -160,7 +160,7 @@ public class ProdCons implements Tampon {
 		{
 	
 			//on vérifie si le test sur l'ordre de retrait des messages est valide en regardant si le message est retiré après le précédent.
-			if(m != l_messages.get(0) && dater.after(((MessageX) m).get_date_retrait()))
+			if(m != l_messages.get(0) && dater.after(((MessageX) m).get_date_retrait().get(0)))
 			{
 					test_fifo_valide = false;
 					System.out.println("*");
@@ -174,8 +174,8 @@ public class ProdCons implements Tampon {
 
 				
 			dated = ((MessageX) m).get_date_envoi();			
-			dater = ((MessageX) m).get_date_retrait();
-			datec = ((MessageX) m).get_date_consommation();
+			dater = ((MessageX) m).get_date_retrait().get(0);
+			datec = ((MessageX) m).get_date_consommation().get(0);
 			
 			
 			//On vérifie que chaque message a été déposé avant d'être retiré
