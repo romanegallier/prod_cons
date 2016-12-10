@@ -3,7 +3,6 @@ package prodcons.v3;
 
 
 public class Semaphore {
-//dkrhgm
 	int compteur;
 	
 	public Semaphore (int compteur){
