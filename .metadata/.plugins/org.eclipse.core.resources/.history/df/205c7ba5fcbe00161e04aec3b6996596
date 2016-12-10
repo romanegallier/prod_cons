@@ -48,8 +48,7 @@ public class ProdCons implements Tampon {
 	
 	public synchronized void fin_prod(){
 		nb_prod_alive --;
-		System.out.println("je suis la \n)"+enAttente+ "  "+ nb_prod_alive);
-		if (cons_should_die()) notEmpty.V();
+		if (cons_should_die()) notifyAll();
 	}
 	public synchronized boolean  cons_should_die (){
 		return (nb_prod_alive==0) && (enAttente==0);
@@ -66,25 +65,22 @@ public class ProdCons implements Tampon {
 		System.out.println("Le cons "+arg0.toString()+ "essaie de prendre un message\n");
 		notEmpty.P();
 		System.out.println("je suis la \n");
-		mutex.P();
 		Message m = (Message)tampon[index_lecture];
 		if(((MessageX)m).get_nbExemplaires()>0) //on peut lire le message
 		{
-			//synchrone.P();
+			synchrone.P();
 			((MessageX)m).set_nbExemplaires(((MessageX)m).get_nbExemplaires()-1);
 			
 		}
 		if(((MessageX)m).get_nbExemplaires()==0)
 		{
 			synchrone.V();
-			
 			index_lecture= (index_lecture+1)%taille;
-			enAttente --;
 		}
 		else notEmpty.V();
-		 
+		mutex.P(); 
 		
-		
+		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
 		System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
 		
@@ -118,7 +114,7 @@ public class ProdCons implements Tampon {
 		notEmpty.V();
 		System.out.println("Le prod "+arg0.toString()+ "prend le synchrone\n");
 		synchrone.P(); //v4 dangereux apres le notEmpty je crois
-		//synchrone.V();
+		synchrone.V();
 		System.out.println("Le prod "+arg0.toString()+ "rend le synchrone\n");
 	}
 

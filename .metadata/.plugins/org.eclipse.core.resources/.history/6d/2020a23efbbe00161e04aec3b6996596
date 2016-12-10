@@ -55,7 +55,6 @@ public class MessageX implements Message{
 		return nbExemplaires;
 	}
 	
-	
 	/**
 	 * décrémente le nombre de consommateurs essayant de retirer le message puis indique si il reste un consommateur à réveiller ou non
 	 * @return true si il reste des consommateur à reveiller. Faux sinon
@@ -121,11 +120,6 @@ public class MessageX implements Message{
 	public String toString (){
 		
 		return "Produit à " + Format_HeureMinuteSeconde(date_production)+"Source : "+source.toString()+"\tNumero : "+String.valueOf(numero)+" Contenu : "+contenu  + "\tmessage n°" + String.valueOf(numero_bis) + "\n";
-	}
-
-	public void set_nbExemplaires(int i) {
-		nbExemplaires=i;
-		
 	}
 
 

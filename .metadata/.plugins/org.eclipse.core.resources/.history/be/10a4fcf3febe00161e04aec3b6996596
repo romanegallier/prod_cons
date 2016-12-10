@@ -48,7 +48,7 @@ public class ProdCons implements Tampon {
 	
 	public synchronized void fin_prod(){
 		nb_prod_alive --;
-		System.out.println("je suis la \n)"+enAttente+ "  "+ nb_prod_alive);
+		System.out.println("je suis la \n)");
 		if (cons_should_die()) notEmpty.V();
 	}
 	public synchronized boolean  cons_should_die (){
@@ -79,12 +79,12 @@ public class ProdCons implements Tampon {
 			synchrone.V();
 			
 			index_lecture= (index_lecture+1)%taille;
-			enAttente --;
+			
 		}
 		else notEmpty.V();
 		 
 		
-		
+		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
 		System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
 		

@@ -48,7 +48,7 @@ public class ProdCons implements Tampon {
 	
 	public synchronized void fin_prod(){
 		nb_prod_alive --;
-		System.out.println("je suis la \n)"+enAttente+ "  "+ nb_prod_alive);
+		System.out.println("je suis la \n)"+enAttente);
 		if (cons_should_die()) notEmpty.V();
 	}
 	public synchronized boolean  cons_should_die (){
