@@ -49,28 +49,36 @@ public class Producteur extends Acteur implements _Producteur  {
 
 	@Override
 	public void run() {
-		
+		((ProdCons) tampon).nv_prod();
 		for (int i=0; i <nbMessage; i++){
-			System.out.println(this.toString()+nbMessage +":"+i);
-			// On produit le message
-			MessageX m = new MessageX(this, i, "patate", new Date(), nbExemplaires.next());
+			je_parle("je produis le message "+(i+1) +" sur "+nbMessage +"\n");
+			MessageX m = new MessageX(this, i, "patate", new Date(),nbExemplaires.next());
 			
-//TODO A CHANGER DE PARTOUT
-			// On attend pour simuler le temp de prod
 			int tempAttente= temp_prod.next();
-			//On informe l'observateur
+			
+			
+			
 			try {
 				obs.productionMessage(this, m, tempAttente);
 				sleep(tempAttente);
-			} catch (InterruptedException | ControlException e) {
+			} catch (InterruptedException e) {
 				System.out.println("J'ai pas reussi a attendre ...\n");
 				e.printStackTrace();
+			} catch (ControlException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
 			
 			try {
+//				je_parle("pre put le tampon a "+tampon.enAttente()+ " message(s) en attente et est de taille "+tampon.taille());
+//				System.out.println("pre put : tampon : " + ((ProdCons) tampon).toString());
 				obs.depotMessage(this, m);
 				tampon.put(this, m);
+				nbMessagesProduits++;
+//				m.set_date_envoi(new Date());  ça ne convient pas ici car on est sorti de la section critique
+//				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
+//				System.out.println("post put : tampon : " + ((ProdCons) tampon).toString());
+//				je_parle("post put le tampon a "+tampon.enAttente()+ "messages en attente et est de taille "+tampon.taille() +"\n");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -79,8 +87,10 @@ public class Producteur extends Acteur implements _Producteur  {
 				e.printStackTrace();
 			};
 			
-						
+			
+			
 		}
+		((ProdCons) tampon).fin_prod();
 		
 	}
 	
@@ -88,7 +98,19 @@ public class Producteur extends Acteur implements _Producteur  {
 		return Acteur.typeProducteur;
 	}
 	
+	//A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
+	public boolean messages_tous_deposes()
+	{
+		return nbMessage==nbMessagesProduits;
+	}
+	
+	
 	public String toString (){
-		return "Producteur "+this.identification()+"\n";
+		return "Producteur "+this.identification();
+	}
+	
+	public void je_parle(String message)
+	{
+		System.out.println(MessageX.Format_HeureMinuteSeconde(new Date()) +this.toString()+"\t"+ message);
 	}
 }
