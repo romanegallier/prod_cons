@@ -9,12 +9,19 @@
 <fullyQualifiedTypeName name="projet_prod_cons.Producteur"/>
 <fullyQualifiedTypeName name="projet_prod_cons.Consommateur"/>
 <fullyQualifiedTypeName name="java.awt.List"/>
-<fullyQualifiedTypeName name="java.util.concurrent.locks.Condition"/>
 <fullyQualifiedTypeName name="jus.poc.prodcons.Simulateur"/>
-<fullyQualifiedTypeName name="java.lang.String"/>
 <fullyQualifiedTypeName name="prodcons.v3.Test1"/>
 <fullyQualifiedTypeName name="projet_prod_cons.MessageX"/>
-<fullyQualifiedTypeName name="jus.poc.prodcons.Message"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
+<fullyQualifiedTypeName name="prodcons.v3.Producteur"/>
+<fullyQualifiedTypeName name="java.util.concurrent.locks.Lock"/>
+<fullyQualifiedTypeName name="java.util.concurrent.locks.ReentrantLock"/>
+<fullyQualifiedTypeName name="java.util.concurrent.locks.Condition"/>
+<fullyQualifiedTypeName name="prodcons.v6.Observations"/>
+<fullyQualifiedTypeName name="prodcons.v6.Producteur"/>
+<fullyQualifiedTypeName name="prodcons.v6.Consommateur"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="jus.poc.prodcons.Message"/>
+<fullyQualifiedTypeName name="prodcons.v6.MessageX"/>
 </qualifiedTypeNameHistroy>

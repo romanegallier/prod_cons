@@ -1,4 +1,4 @@
-package prodcons.v1 ;
+package src.prodcons.v1;
 
 import java.util.ArrayList;
 import java.util.Date;

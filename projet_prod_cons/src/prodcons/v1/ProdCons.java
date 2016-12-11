@@ -42,6 +42,9 @@ public class ProdCons implements Tampon {
 		if (cons_should_die()) notifyAll();
 	}
 	public synchronized boolean  cons_should_die (){
+		boolean res = (nb_prod_alive==0) && (enAttente==0);
+		if (res) 
+			notifyAll();
 		return (nb_prod_alive==0) && (enAttente==0);
 	}
 	@Override

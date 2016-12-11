@@ -24,7 +24,6 @@ public class Producteur extends Acteur implements _Producteur  {
 		this.tampon=tampon;
 		nbExemplaires = new Aleatoire(nbMoyenExemplaires,deviationNbExemplaires);
 		obs=observateur;
-		
 	}
 
 	@Override

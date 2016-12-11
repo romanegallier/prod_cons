@@ -60,7 +60,7 @@ public class MessageX implements Message{
 	 * décrémente le nombre de consommateurs essayant de retirer le message puis indique si il reste un consommateur à réveiller ou non
 	 * @return true si il reste des consommateur à reveiller. Faux sinon
 	 */
-	public boolean reveil_necessaire()
+	public synchronized boolean reveil_necessaire()
 	{
 		nbConsommateurs--;
 		return nbConsommateurs > 0;
@@ -70,12 +70,13 @@ public class MessageX implements Message{
 	 * indique si il est possible de retirer le message (donc si autant de consommateurs que d'exemplaires sont réunis)
 	 * @return true si autant de consommateurs que d'exemplaires sont réunis. False sinon
 	 */
-	public boolean retrait_possible() //c'est pas un peu dangereux ca ? 
+	public synchronized boolean retrait_possible()
+
 	{
 
 		nbConsommateurs++;
 		//TODO retirer le syso car il ne sert qu'à tester le bon fonctionnement de la consommation synchrone
-		System.out.println("Il y a "+nbConsommateurs+" qui veulent retirer ce message ("+nbExemplaires+" exemplaires)");
+		System.out.println("Il y a "+nbConsommateurs+" consommateurs qui veulent retirer le message "+numero+" ("+nbExemplaires+" exemplaires)");
 
 		return nbConsommateurs == nbExemplaires;
 	}
