@@ -54,10 +54,14 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
-		while (enAttente==0){
+		while (enAttente==0 && !cons_should_die()){
 			/*notEmpty.*/wait();
 		}
 		Message m = tampon[index_lecture];
+		if (m==null)	//TODO bêrk, c'est dégeu, faut ptetre changer ça
+		{
+			return null;
+		}
 		num2++;
 		((MessageX)m).set_num2(num2);
 		index_lecture= (index_lecture+1)%taille;

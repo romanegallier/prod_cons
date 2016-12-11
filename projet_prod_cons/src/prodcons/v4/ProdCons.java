@@ -68,15 +68,22 @@ public class ProdCons implements Tampon {
 		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
 		int index_temp = index_lecture; //TODO il me semble que j'avais trouvé une meilleure solution pour n'incrémenter qu'une seule fois mais j'ai oublié. Si ça me revient faut changer du coup
-		if(!((MessageX) m).retrait_possible())
+
+		if(!((MessageX) m).retrait_possible()) //retrait_possible incrémente le compteur de consommateurs dans le message. ensuite cela retourne false si il n'y a pas autant de consommateurs que d'exemplaires
 		{
-			synchrone.P();
+			synchrone.P();	//Si le consommateur n'est pas le dernier attendu, il faut qu'il se bloque en attendant l(es) autre(s)
 			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
 		}
 		conso.je_parle("je suis sorti du premier if");
-		if(((MessageX) m).reveil_necessaire())
-		{
-			synchrone.V();
+		
+		
+		if(((MessageX) m).reveil_necessaire()) //reveil_necessaire décrémente le compteur de consommateurs sur le message puis vérifie qu'il reste des consommateurs à réveiller (compteur > 0)
+		{ //TODO ajouter un cas où il n'y a qu'un seul exemplaire
+			
+			synchrone.V(); // Le dernier consommateur ne passe pas dans le P() (voir plus haut). Il va ensuite passer dans V() pour réveiller le producteur (plus ancien thread endormi ici)
+			//en passant ici, les autres consommateurs se réveillent successivement.
+			//L'un des consommateur n'a pas besoin de passer ici (quand tous les autres sont réveillés). d'où le if
+			
 			conso.je_parle("J'ai passé le synchrone.V()");
 		}
 		conso.je_parle("J'ai passé le deuxième if");
@@ -114,8 +121,18 @@ public class ProdCons implements Tampon {
 			notEmpty.V();
 		}
 		pro.je_parle("j'ai passé notEmpty.V()");
-		synchrone.P(); //v4 dangereux apres le notEmpty je crois
-		synchrone.V();
+		synchrone.P(); /*Cette ligne bloque le producteur.
+		C'est important de le faire après le mutex.V() et le notEmpty.V() car ça permet de laisser d'autres acteurs passer.
+		Le producteur a donc déposé un message et attend que les consommateurs soient assez nombreux pour pouvoir continuer 
+		---
+		Ce producteur sera débloqué par le dernier consommateur à arriver dans le get (voir la méthode get)
+		*/
+		
+		synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
+		/* Quand le producteur est réveillé,
+		 *  ça veut dire que tous les consommateurs nécessaires sont réunis pour consommer le message
+		 *  Il faut que le producteur réveille un consommateur endormi (ici ce sera le premier consommateur arrivé dans le get)
+		 */
 	}
 
 	@Override
