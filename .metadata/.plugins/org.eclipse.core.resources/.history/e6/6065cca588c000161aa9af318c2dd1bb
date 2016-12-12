@@ -85,7 +85,7 @@ public class ProdCons implements Tampon {
 			throw new FinProgExeption();
 		}
 	
-		conso.je_parle("j'ai passé notEmpty.P()");
+		//conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
 		mutex.P();
 		((MessageX)m).incrNbConsommateurs();

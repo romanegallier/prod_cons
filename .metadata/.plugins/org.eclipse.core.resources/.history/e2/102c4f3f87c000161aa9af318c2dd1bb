@@ -85,11 +85,10 @@ public class ProdCons implements Tampon {
 			throw new FinProgExeption();
 		}
 	
-		conso.je_parle("j'ai passé notEmpty.P()");
+		//conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
-		mutex.P();
+		
 		((MessageX)m).incrNbConsommateurs();
-		mutex.V();
 		System.out.println(((MessageX)m).get_nbConsommateurs());
 		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
 		{
@@ -97,9 +96,8 @@ public class ProdCons implements Tampon {
 			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
 		}
 		//conso.je_parle("je suis sorti du premier if");
-		mutex.P();
-		((MessageX) m).decrNbConsommateurs();
-		mutex.V();
+		
+		((MessageX) m).decrNbConsommateurs();		
 		if(((MessageX)m).get_nbConsommateurs()>0) 
 		{ 
 			synchrone.V();

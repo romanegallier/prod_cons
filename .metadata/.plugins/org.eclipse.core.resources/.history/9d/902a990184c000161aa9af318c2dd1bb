@@ -87,34 +87,31 @@ public class ProdCons implements Tampon {
 	
 		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
-		mutex.P();
+		
 		((MessageX)m).incrNbConsommateurs();
-		mutex.V();
 		System.out.println(((MessageX)m).get_nbConsommateurs());
 		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
 		{
 			synchrone.P();	
 			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
 		}
-		//conso.je_parle("je suis sorti du premier if");
-		mutex.P();
-		((MessageX) m).decrNbConsommateurs();
-		mutex.V();
+		conso.je_parle("je suis sorti du premier if");
+		
+		
 		if(((MessageX)m).get_nbConsommateurs()>0) 
 		{ 
 			synchrone.V();
-
-
-			//conso.je_parle("J'ai passé le synchrone.V()");
+			conso.je_parle("J'ai passé le synchrone.V()");
 		}
-		//conso.je_parle("getProducteur_endormi a retourné : "+((MessageX) m).getProducteur_endormi());
-		//conso.je_parle("J'ai passé le deuxième if");
+		conso.je_parle("getProducteur_endormi a retourné : "+((MessageX) m).getProducteur_endormi());
+		conso.je_parle("J'ai passé le deuxième if");
 		mutex.P();
 
 		((MessageX) m).set_date_retrait(new Date());
 		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
 		
 		
+		((MessageX) m).decrNbConsommateurs();
 		if (((MessageX)m).get_nbConsommateurs()<=0){
 			System.out.println("je suis le dernier conso");
 			enAttente --;
@@ -147,21 +144,21 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		((Producteur) arg0).je_parle("Je put le message "+num+ "en "+((MessageX) arg1).get_nbExemplaires()+ "   "+((MessageX) arg1).get_nbConsommateurs());
+		((Producteur) arg0).je_parle("Je put le message "+num);
 
 		mutex.V();
 		for(int i = 0; i < ((MessageX) arg1).get_nbExemplaires(); i++)
 		{
 			notEmpty.V();
 		}
-		//pro.je_parle("j'ai passé notEmpty.V()");
+		pro.je_parle("j'ai passé notEmpty.V()");
 		prodSync.P(); /*Cette ligne bloque le producteur.
 		C'est important de le faire après le mutex.V() et le notEmpty.V() car ça permet de laisser d'autres acteurs passer.
 		Le producteur a donc déposé un message et attend que les consommateurs soient assez nombreux pour pouvoir continuer 
 		---
 		Ce producteur sera débloqué par le dernier consommateur à arriver dans le get (voir la méthode get)
 		*/
-		//pro.je_parle("je me réveille");
+		pro.je_parle("je me réveille");
 		((MessageX) arg1).je_me_reveille();
 		if (((MessageX) arg1).reveil_necessaire())synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
 		/* Quand le producteur est réveillé,

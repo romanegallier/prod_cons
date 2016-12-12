@@ -85,11 +85,10 @@ public class ProdCons implements Tampon {
 			throw new FinProgExeption();
 		}
 	
-		conso.je_parle("j'ai passé notEmpty.P()");
+		//conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
-		mutex.P();
+		
 		((MessageX)m).incrNbConsommateurs();
-		mutex.V();
 		System.out.println(((MessageX)m).get_nbConsommateurs());
 		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
 		{
@@ -97,14 +96,11 @@ public class ProdCons implements Tampon {
 			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
 		}
 		//conso.je_parle("je suis sorti du premier if");
-		mutex.P();
-		((MessageX) m).decrNbConsommateurs();
-		mutex.V();
+		
+		
 		if(((MessageX)m).get_nbConsommateurs()>0) 
 		{ 
 			synchrone.V();
-
-
 			//conso.je_parle("J'ai passé le synchrone.V()");
 		}
 		//conso.je_parle("getProducteur_endormi a retourné : "+((MessageX) m).getProducteur_endormi());
@@ -115,6 +111,7 @@ public class ProdCons implements Tampon {
 		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
 		
 		
+		((MessageX) m).decrNbConsommateurs();
 		if (((MessageX)m).get_nbConsommateurs()<=0){
 			System.out.println("je suis le dernier conso");
 			enAttente --;
