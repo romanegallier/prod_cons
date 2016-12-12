@@ -47,7 +47,7 @@ public class ProdCons implements Tampon {
 	
 	public synchronized void fin_prod(){
 		nb_prod_alive --;
-		if (cons_should_die()) notifyAll();
+		if (cons_should_die()) notEmpty.V();
 	}
 	public synchronized boolean  cons_should_die (){
 		return (nb_prod_alive==0) && (enAttente==0);
@@ -60,17 +60,27 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		notEmpty.P();
-		mutex.P(); 
-		Message m = tampon[index_lecture];
-		index_lecture= (index_lecture+1)%taille;
-		enAttente --;
-		((MessageX) m).set_date_retrait(new Date());
-		System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
-		
-		mutex.V();
-		notFull.V();
-		return m;
-		
+		if (cons_should_die()){
+			notEmpty.V();// peut etre a enlever
+			((Consommateur)arg0).je_parle("je passe par la\n ");
+			throw new FinProgExeption();
+			
+		}
+		else {
+			mutex.P(); 
+			Message m = tampon[index_lecture];
+			index_lecture= (index_lecture+1)%taille;
+			enAttente --;
+			((MessageX) m).set_date_retrait(new Date());
+			System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
+			
+			mutex.V();
+			notFull.V();
+			if (cons_should_die()){
+				notEmpty.V();// TODO peut etre a enlever
+			}
+			return m;
+		}
 	}
 
 	@Override

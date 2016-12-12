@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import jus.poc.prodcons.*;
+import prodcons.v3.FinProgExeption;
 
 public class Consommateur extends Acteur implements _Consommateur  {
 
@@ -52,32 +53,33 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	public void run() {
 		MessageX m = new MessageX(null,0,null,null);
 		int temp_attente;
-		while (!(((ProdCons)tampon).cons_should_die())){
+		boolean b=true;
+		while (b){
 			try {
-			
 				m=(MessageX) tampon.get(this);
-				if (m!= null){ 
-					obs.retraitMessage(this, m);
-//					m.set_date_retrait(new Date());
-
-					je_parle("je viens de get le message : "+m.toString());
-					nbMessage++;
-				}
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				System.out.println("petit probleme1\n");
 				e.printStackTrace();
-				
+
+			}catch (FinProgExeption e){
+				System.out.println("je rentre la ");
+				b=false;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				System.out.println("petit probleme2\n");
 				e.printStackTrace();
-				
 			}
-		
-			if (m!= null) {
-				temp_attente=this.temp_traitement.next();
+			
+			if (b){ 
 				try {
+					obs.retraitMessage(this, m);
+	//				m.set_date_retrait(new Date());
+	
+					je_parle("je viens de get le message : "+m.toString());
+					nbMessage++;
+					temp_attente=this.temp_traitement.next();
+				
 					obs.consommationMessage(this, m, temp_attente);
 					sleep(temp_attente);
 				} catch (InterruptedException e) {
@@ -89,10 +91,8 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				}
 				m.set_date_consommation(new Date());
 			}
-			
-			
-			
-		}
+		}	
+
 		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 	public static int Cons (){

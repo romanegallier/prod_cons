@@ -54,20 +54,27 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
-		while (enAttente<=0 && !cons_should_die()){
+		((Consommateur) arg0).je_parle("Je suis entré dans le get");
+		while (enAttente==0){
+			if(cons_should_die())
+			{
+				Thread.currentThread().interrupt();
+			}
+
 			/*notEmpty.*/wait();
+			((Consommateur) arg0).je_parle("On vient de me réveiller !");
 		}
 		Message m = tampon[index_lecture];
-		if (m==null)	//TODO bêrk, c'est dégeu, faut ptetre changer ça
+/*		if (m==null)	//TODO bêrk, c'est dégeu, faut ptetre changer ça
 		{
 			return null;
-		}
+		} */
 		num2++;
 		((MessageX)m).set_num2(num2);
 		index_lecture= (index_lecture+1)%taille;
 		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
-		System.out.println("Je get le message " + num2);
+		((Consommateur) arg0).je_parle("Je get le message " + num2);
 		/*notFull.signal()*/ notifyAll();
 		return m;
 	}
@@ -84,7 +91,7 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		System.out.println("Je put le message "+num);
+		((Producteur) arg0).je_parle("Je put le message "+num);
 		/*notEmpty.signal()*/ notifyAll();
 	}
 

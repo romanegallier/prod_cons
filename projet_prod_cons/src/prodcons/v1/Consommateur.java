@@ -53,40 +53,35 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=(MessageX) tampon.get(this);
-//				m.set_date_retrait(new Date());
 
-				if(m!=null)
-				{
-					je_parle("je viens de get le message : "+m.toString());
-					nbMessage++;
-				}
+				je_parle("je viens de get le message : "+m.toString());
+				nbMessage++;
+				temp_attente=this.temp_traitement.next();
+
+				sleep(temp_attente);
+				
+				m.set_date_consommation(new Date());
+
+			
+			
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				System.out.println("petit probleme1\n");
-				e.printStackTrace();
+				je_parle("petit probleme1\n");
+//				e.printStackTrace();
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				System.out.println("petit probleme2\n");
+				je_parle("petit probleme2\n");
 				e.printStackTrace();
 				
 			}
-		
-			
-			temp_attente=this.temp_traitement.next();
-			try {
-				sleep(temp_attente);
-			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
-				e.printStackTrace();
-			}
-			
-			if(m!=null)	//TODO ça aussi
-				m.set_date_consommation(new Date());
+					
 			
 		}
+		
 		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
+
 	public static int Cons (){
 		return Acteur.typeConsommateur;
 	}

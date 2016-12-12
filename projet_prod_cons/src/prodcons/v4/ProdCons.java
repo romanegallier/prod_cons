@@ -24,6 +24,7 @@ public class ProdCons implements Tampon {
 	private Semaphore synchrone;
 	private int nb_prod_alive = 0;
 
+	private Semaphore mutex2 = new Semaphore(1);
 	//private Condition notEmpty, notFull;
 	
 	
@@ -89,7 +90,13 @@ public class ProdCons implements Tampon {
 */
 		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
 		conso.je_parle("j'arrive dans le get");
-		notEmpty.P();
+		mutex2.P();
+		if(cons_should_die())
+		{
+			Thread.currentThread().interrupt();
+		}
+		notEmpty.P(); //Il faut empêcher le thread d'arriver ici si cons_should_die
+		mutex2.V();
 		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
 		int index_temp = index_lecture; //TODO il me semble que j'avais trouvé une meilleure solution pour n'incrémenter qu'une seule fois mais j'ai oublié. Si ça me revient faut changer du coup
@@ -102,7 +109,7 @@ public class ProdCons implements Tampon {
 		conso.je_parle("je suis sorti du premier if");
 		
 		
-		if(((MessageX) m).reveil_necessaire()) //reveil_necessaire décrémente le compteur de consommateurs sur le message puis vérifie qu'il reste des consommateurs à réveiller (compteur > 0)
+		if(((MessageX) m).reveil_necessaire() || ((MessageX) m).getProducteur_endormi()) //reveil_necessaire décrémente le compteur de consommateurs sur le message puis vérifie qu'il reste des consommateurs à réveiller (compteur > 0)
 		{ //TODO ajouter un cas où il n'y a qu'un seul exemplaire
 			
 			synchrone.V(); // Le dernier consommateur ne passe pas dans le P() (voir plus haut). Il va ensuite passer dans V() pour réveiller le producteur (plus ancien thread endormi ici)
@@ -111,6 +118,7 @@ public class ProdCons implements Tampon {
 			
 			conso.je_parle("J'ai passé le synchrone.V()");
 		}
+		conso.je_parle("getProducteur_endormi a retourné : "+((MessageX) m).getProducteur_endormi());
 		conso.je_parle("J'ai passé le deuxième if");
 		mutex.P();
 		
@@ -153,9 +161,13 @@ public class ProdCons implements Tampon {
 
 		mutex.V();
 <<<<<<< HEAD
+<<<<<<< HEAD
 		notEmpty.V();
 		System.out.println("Le prod "+arg0.toString()+ "prend le synchrone\n");
 =======
+=======
+
+>>>>>>> bf67f4b20e552372e300602ef899230b9c11ebd9
 		for(int i = 0; i < ((MessageX) arg1).get_nbExemplaires(); i++)
 		{
 			notEmpty.V();
@@ -173,7 +185,8 @@ public class ProdCons implements Tampon {
 		---
 		Ce producteur sera débloqué par le dernier consommateur à arriver dans le get (voir la méthode get)
 		*/
-		
+		pro.je_parle("je me réveille");
+		((MessageX) arg1).je_me_reveille();
 		synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
 		/* Quand le producteur est réveillé,
 		 *  ça veut dire que tous les consommateurs nécessaires sont réunis pour consommer le message

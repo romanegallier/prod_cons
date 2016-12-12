@@ -17,7 +17,7 @@ public class MessageX implements Message{
 	private int numero_tris;	//TODO à enlever, (c'était pour des tests)
 	private int nbExemplaires;	// Nombre d'exemplaires de ce message produits
 	private int nbConsommateurs = 0; //enregistre le nombre de consommateur essayant de retirer ce message
-	
+	private boolean producteur_endormi = true; //Permet de savoir si le producteur a dépassé synchrone.P() ou non (true si il n'a pas encore dépassé synchrone.P()
 	
 	public MessageX(Producteur p , int n, String contenu,Date date , int nbExemplaires){
 		this.source=p;
@@ -81,6 +81,20 @@ public class MessageX implements Message{
 		return nbConsommateurs == nbExemplaires;
 	}
 	
+	//Réservé aux producteurs, permet d'indiquer au message que le producteur n'est plus coincé dans synchrone.P() (donc plus besoin de le réveiller => voir prodcons.get(...))
+	public void je_me_reveille()
+	{
+		//TODO changer ça en try catch
+		if(Thread.currentThread() instanceof _Consommateur)
+			System.out.println("Je fais un truc interdit !!");
+		
+		producteur_endormi = false;
+	}
+	
+	public boolean getProducteur_endormi()
+	{
+		return producteur_endormi;
+	}
 	
 	public void set_date_envoi(Date date)
 	{

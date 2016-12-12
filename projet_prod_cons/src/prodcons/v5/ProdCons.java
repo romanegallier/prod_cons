@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import jus.poc.prodcons.*;
+import prodcons.v3.FinProgExeption;
 
 public class ProdCons implements Tampon {
 	
@@ -52,21 +53,18 @@ public class ProdCons implements Tampon {
 	}
 	
 	public void fin_prod(){
-		System.out.println("je rentre ici\n");
 		lock.lock();
+		System.out.println("je rentre ici\n");
+	
 		System.out.println("je rentre ici2\n");
 		nb_prod_alive --;
-		if (nb_prod_alive==0){notEmpty.signal();}
+		if (nb_prod_alive==0){notEmpty.signal();System.out.println("il y a plus de prod je reveille quelqu'un");}
 		lock.unlock();
 	
 	}
 	public boolean  cons_should_die (){
-		lock.lock();
-		try{
-			return (nb_prod_alive==0) && (enAttente==0);
-		}finally{
-			lock.unlock();
-		}
+		return (nb_prod_alive==0) && (enAttente==0);
+		
 	}
 	@Override
 	public int enAttente() {
@@ -74,26 +72,38 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0)  throws InterruptedException {
+	public Message get(_Consommateur arg0)  throws InterruptedException, FinProgExeption {
 		System.out.println("je suis le prod" + arg0.toString()+ "et je demande le lock\n");	
 	     lock.lock();
 	     System.out.println("je suis le prod" + arg0.toString()+ "j'ai le lock\n");
 	     try {
-	       while (enAttente == 0 && ! cons_should_die()){  //TODO estce que le while est necesaire
+	       while (enAttente == 0 ){  //TODO estce que le while est necesaire
 	    	 System.out.println("je suis le prod" + arg0.toString()+ "et je me bloque dans le not EMpty\n"); 
 	         notEmpty.await();
 	         System.out.println("je suis le prod" + arg0.toString()+ "et je sort du not EMpty\n");
+	         if (cons_should_die()){
+	        	 System.out.println("je doit mourir, je reveille les autres");
+	        	 notEmpty.signalAll();
+		    	   throw new FinProgExeption();
+		       }
 	       }
-	       if (! cons_should_die()){
+	      
 	    	   Message m = tampon[index_lecture];
 	    	   index_lecture= (index_lecture+1)%taille;
 	    	   enAttente --;
 	    	   notFull.signal();
+				if (cons_should_die()){
+					notEmpty.signalAll();// TODO peut etre a enlever
+					System.out.println("j'ai lu et je doit mourir je reveille les autres");
+				}
+			
 	    	   return m;
-	       }
-	       else {notEmpty.signal();return null;}// cas a traiter
 	     } finally {
 	       lock.unlock();
+	       if (cons_should_die()){
+				notEmpty.signalAll();// TODO peut etre a enlever
+				System.out.println("j'ai lu et je doit mourir je reveille les autres2");
+			}
 	     }
 	}
 	 

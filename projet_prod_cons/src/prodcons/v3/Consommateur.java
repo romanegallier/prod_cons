@@ -51,19 +51,18 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	public void run() {
 		MessageX m = new MessageX(null,0,null,null);
 		int temp_attente;
-		while (!(((ProdCons)tampon).cons_should_die())){
+		boolean b=true;
+		while (b){
 			try {
-			
 				m=(MessageX) tampon.get(this);
-				obs.retraitMessage(this, m);
-//				m.set_date_retrait(new Date());
-
-				je_parle("je viens de get le message : "+m.toString());
-				nbMessage++;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				System.out.println("petit probleme1\n");
 				e.printStackTrace();
+				
+			}catch (FinProgExeption e){
+				je_parle ("petit probleme 3");
+				b= false;
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -71,22 +70,35 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				e.printStackTrace();
 				
 			}
-		
 			
-			temp_attente=this.temp_traitement.next();
-			try {
-				obs.consommationMessage(this, m, temp_attente);
-				sleep(temp_attente);
-			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
-				e.printStackTrace();
-			} catch (ControlException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (b && m!=null){ //TODO la deuxieme condition est peut etre inutile
+				try {
+					obs.retraitMessage(this, m);
+				} catch (ControlException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	//			m.set_date_retrait(new Date());
+				
+				je_parle("je viens de get le message : "+m.toString());
+				nbMessage++;
+	
+			
+				
+				temp_attente=this.temp_traitement.next();
+				try {
+					obs.consommationMessage(this, m, temp_attente);
+					sleep(temp_attente);
+				} catch (InterruptedException e) {
+					System.out.println("J'ai pas reussi a attendre ...\n");
+					e.printStackTrace();
+				} catch (ControlException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				m.set_date_consommation(new Date());
 			}
-			
-			m.set_date_consommation(new Date());
-			
 		}
 		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
