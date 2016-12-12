@@ -63,23 +63,7 @@ public class MessageX implements Message{
 	public synchronized boolean reveil_necessaire()
 	{
 		nbConsommateurs--;
-		return nbConsommateurs >=0;
-	}
-	
-	public void incrNbConsommateurs()
-	{
-		nbConsommateurs++;
-	}
-	
-	public void decrNbConsommateurs()
-	{
-		nbConsommateurs--;
-	}
-	
-	public int get_nbConsommateurs()
-	{
-		return nbConsommateurs;
-	}
+		return nbConsommateurs >=0;}
 	/**
 	 * effet de bord : incrémente le nombre de consommateurs prêts à retirer ce message
 	 * indique si il est possible de retirer le message (donc si autant de consommateurs que d'exemplaires sont réunis)

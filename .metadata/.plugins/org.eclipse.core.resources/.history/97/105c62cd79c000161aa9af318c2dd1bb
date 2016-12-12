@@ -7,7 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import jus.poc.prodcons.*;
-
+import prodcons.v2.Consommateur;
+import prodcons.v2.FinProgExeption;
 
 
 public class ProdCons implements Tampon {
@@ -66,30 +67,31 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0) throws Exception, InterruptedException,FinProgExeption {
+	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 
 		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
 		conso.je_parle("j'arrive dans le get");
 		
 		if(cons_should_die())
 		{
-			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
-			throw new FinProgExeption();
-			
+			conso.je_parle("je doit mourir\n");
+			Thread.currentThread().interrupt();
 		}
 		notEmpty.P(); //Il faut empêcher le thread d'arriver ici si cons_should_die
 		if (cons_should_die()){
 			notEmpty.V();// peut etre a enlever
 			((Consommateur)arg0).je_parle("je passe par la\n ");
 			throw new FinProgExeption();
+			
 		}
 	
+		
+		
+		
 		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
 		
-		((MessageX)m).incrNbConsommateurs();
-		System.out.println(((MessageX)m).get_nbConsommateurs());
+
 		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
 		{
 			synchrone.P();	
@@ -111,7 +113,7 @@ public class ProdCons implements Tampon {
 		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
 		
 		
-		((MessageX) m).decrNbConsommateurs();
+		
 		if (((MessageX)m).get_nbConsommateurs()<=0){
 			System.out.println("je suis le dernier conso");
 			enAttente --;
@@ -141,7 +143,7 @@ public class ProdCons implements Tampon {
 
 		
 		index_ecriture = (index_ecriture +1)%taille;
-		enAttente++;
+		enAttente=enAttente+((MessageX)arg1).get_nbExemplaires();
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
 		((Producteur) arg0).je_parle("Je put le message "+num);

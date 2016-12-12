@@ -9,7 +9,6 @@ import java.util.List;
 import jus.poc.prodcons.*;
 
 
-
 public class ProdCons implements Tampon {
 	
 	private int num; //numero du message TODO peut être à supprimer
@@ -24,7 +23,6 @@ public class ProdCons implements Tampon {
 	private Semaphore mutex;
 	private Semaphore synchrone;
 	private int nb_prod_alive = 0;
-	private Semaphore prodSync;
 
 	private Semaphore mutex2 = new Semaphore(1);
 	//private Condition notEmpty, notFull;
@@ -41,7 +39,6 @@ public class ProdCons implements Tampon {
 		notEmpty= new Semaphore(0);
 		mutex= new Semaphore(1);
 		synchrone = new Semaphore(0);
-		prodSync = new Semaphore(0);
 		num = 0;
 		l_messages = new LinkedList<Message>();
 	}
@@ -56,7 +53,7 @@ public class ProdCons implements Tampon {
 		if (cons_should_die()) notEmpty.V();
 	}
 	public synchronized boolean  cons_should_die (){
-		return (nb_prod_alive<=0) && (enAttente<=0);
+		return (nb_prod_alive==0) && (enAttente==0);
 	}
 
 
@@ -66,60 +63,73 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0) throws Exception, InterruptedException,FinProgExeption {
-
-		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
-		conso.je_parle("j'arrive dans le get");
-		
-		if(cons_should_die())
+	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
+/*
+		System.out.println("Le cons "+arg0.toString()+ "essaie de prendre un message\n");
+		notEmpty.P();
+		System.out.println("je suis la \n");
+		mutex.P();
+		Message m = (Message)tampon[index_lecture];
+		if(((MessageX)m).get_nbExemplaires()>0) //on peut lire le message
 		{
-			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
-			throw new FinProgExeption();
+			//synchrone.P();
+			((MessageX)m).set_nbExemplaires(((MessageX)m).get_nbExemplaires()-1);
 			
 		}
-		notEmpty.P(); //Il faut empêcher le thread d'arriver ici si cons_should_die
-		if (cons_should_die()){
-			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
-			throw new FinProgExeption();
+		if(((MessageX)m).get_nbExemplaires()==0)
+		{
+			synchrone.V();
+			
+			index_lecture= (index_lecture+1)%taille;
+			enAttente --;
 		}
-	
+		else notEmpty.V();
+		 
+		
+		
+*/
+		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
+		conso.je_parle("j'arrive dans le get");
+		mutex2.P();
+		if(cons_should_die())
+		{
+			Thread.currentThread().interrupt();
+		}
+		notEmpty.P(); //Il faut empêcher le thread d'arriver ici si cons_should_die
+		mutex2.V();
 		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
-		
-		((MessageX)m).incrNbConsommateurs();
-		System.out.println(((MessageX)m).get_nbConsommateurs());
-		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
+		int index_temp = index_lecture; //TODO il me semble que j'avais trouvé une meilleure solution pour n'incrémenter qu'une seule fois mais j'ai oublié. Si ça me revient faut changer du coup
+
+		if(!((MessageX) m).retrait_possible()) //retrait_possible incrémente le compteur de consommateurs dans le message. ensuite cela retourne false si il n'y a pas autant de consommateurs que d'exemplaires
 		{
-			synchrone.P();	
+			synchrone.P();	//Si le consommateur n'est pas le dernier attendu, il faut qu'il se bloque en attendant l(es) autre(s)
 			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
 		}
 		conso.je_parle("je suis sorti du premier if");
 		
 		
-		if(((MessageX)m).get_nbConsommateurs()>0) 
-		{ 
-			synchrone.V();
+		if(((MessageX) m).reveil_necessaire() || ((MessageX) m).getProducteur_endormi()) //reveil_necessaire décrémente le compteur de consommateurs sur le message puis vérifie qu'il reste des consommateurs à réveiller (compteur > 0)
+		{ //TODO ajouter un cas où il n'y a qu'un seul exemplaire
+			
+			synchrone.V(); // Le dernier consommateur ne passe pas dans le P() (voir plus haut). Il va ensuite passer dans V() pour réveiller le producteur (plus ancien thread endormi ici)
+			//en passant ici, les autres consommateurs se réveillent successivement.
+			//L'un des consommateur n'a pas besoin de passer ici (quand tous les autres sont réveillés). d'où le if
+			
 			conso.je_parle("J'ai passé le synchrone.V()");
 		}
 		conso.je_parle("getProducteur_endormi a retourné : "+((MessageX) m).getProducteur_endormi());
 		conso.je_parle("J'ai passé le deuxième if");
 		mutex.P();
+		
+		index_lecture= (index_temp+1)%taille; //tous les consommateurs ont mémorisé l'index du message dans index_temp. du coup ça revient à ne l'incrémenter qu'une seule fois.
+		enAttente --;
 
 		((MessageX) m).set_date_retrait(new Date());
-		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
+		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1));//TODO probleme avec le numero du message
 		
-		
-		((MessageX) m).decrNbConsommateurs();
-		if (((MessageX)m).get_nbConsommateurs()<=0){
-			System.out.println("je suis le dernier conso");
-			enAttente --;
-			index_lecture= (index_lecture +1)%taille;
-			prodSync.V();
-			notFull.V();
-		}
 		mutex.V();
+		notFull.V();// je pense pas qu'il faille le faire dans tout les cas
 		return m;
 		
 	}
@@ -152,7 +162,7 @@ public class ProdCons implements Tampon {
 			notEmpty.V();
 		}
 		pro.je_parle("j'ai passé notEmpty.V()");
-		prodSync.P(); /*Cette ligne bloque le producteur.
+		synchrone.P(); /*Cette ligne bloque le producteur.
 		C'est important de le faire après le mutex.V() et le notEmpty.V() car ça permet de laisser d'autres acteurs passer.
 		Le producteur a donc déposé un message et attend que les consommateurs soient assez nombreux pour pouvoir continuer 
 		---
@@ -160,7 +170,7 @@ public class ProdCons implements Tampon {
 		*/
 		pro.je_parle("je me réveille");
 		((MessageX) arg1).je_me_reveille();
-		if (((MessageX) arg1).reveil_necessaire())synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
+		synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
 		/* Quand le producteur est réveillé,
 		 *  ça veut dire que tous les consommateurs nécessaires sont réunis pour consommer le message
 		 *  Il faut que le producteur réveille un consommateur endormi (ici ce sera le premier consommateur arrivé dans le get)

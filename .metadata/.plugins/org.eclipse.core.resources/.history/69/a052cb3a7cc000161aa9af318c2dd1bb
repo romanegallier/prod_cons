@@ -83,13 +83,16 @@ public class ProdCons implements Tampon {
 			notEmpty.V();// peut etre a enlever
 			((Consommateur)arg0).je_parle("je passe par la\n ");
 			throw new FinProgExeption();
+			
 		}
 	
+		
+		
+		
 		conso.je_parle("j'ai passé notEmpty.P()");
 		Message m = tampon[index_lecture];
 		
-		((MessageX)m).incrNbConsommateurs();
-		System.out.println(((MessageX)m).get_nbConsommateurs());
+
 		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
 		{
 			synchrone.P();	
@@ -111,7 +114,7 @@ public class ProdCons implements Tampon {
 		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
 		
 		
-		((MessageX) m).decrNbConsommateurs();
+		
 		if (((MessageX)m).get_nbConsommateurs()<=0){
 			System.out.println("je suis le dernier conso");
 			enAttente --;
@@ -141,7 +144,7 @@ public class ProdCons implements Tampon {
 
 		
 		index_ecriture = (index_ecriture +1)%taille;
-		enAttente++;
+		enAttente=enAttente+((MessageX)arg1).get_nbExemplaires();
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
 		((Producteur) arg0).je_parle("Je put le message "+num);

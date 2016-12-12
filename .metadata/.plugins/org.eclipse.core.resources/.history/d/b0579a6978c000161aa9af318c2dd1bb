@@ -76,7 +76,7 @@ public class MessageX implements Message{
 		nbConsommateurs--;
 	}
 	
-	public int get_nbConsommateurs()
+	public int nbConsommateurs()
 	{
 		return nbConsommateurs;
 	}

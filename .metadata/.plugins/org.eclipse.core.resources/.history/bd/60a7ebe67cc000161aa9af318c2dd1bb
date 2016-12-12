@@ -111,7 +111,7 @@ public class ProdCons implements Tampon {
 		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
 		
 		
-		((MessageX) m).decrNbConsommateurs();
+		
 		if (((MessageX)m).get_nbConsommateurs()<=0){
 			System.out.println("je suis le dernier conso");
 			enAttente --;

@@ -11,7 +11,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import jus.poc.prodcons.*;
 import prodcons.v3.FinProgExeption;
-import prodcons.v3.MessageX;
 
 public class ProdCons implements Tampon {
 	
@@ -87,17 +86,12 @@ public class ProdCons implements Tampon {
 	    	 System.out.println("je suis le prod" + arg0.toString()+ "et je me bloque dans le not EMpty\n"); 
 	         notEmpty.await();
 	         System.out.println("je suis le prod" + arg0.toString()+ "et je sort du not EMpty\n");
-		     if (cons_should_die()){
-	        	 System.out.println("je doit mourir, je reveille les autres");
-	        	 notEmpty.signalAll();
-		    	   throw new FinProgExeption();
-		       }
+	         
 	       }
 	      
 	    	   Message m = tampon[index_lecture];
 	    	   index_lecture= (index_lecture+1)%taille;
 	    	   enAttente --;
-	    	   ((MessageX) m).set_date_retrait(new Date());
 	    	   notFull.signal();
 				if (cons_should_die()){
 					notEmpty.signalAll();// TODO peut etre a enlever
@@ -209,8 +203,6 @@ public class ProdCons implements Tampon {
 			
 			
 			//On vérifie que chaque message a été déposé avant d'être retiré
-			if (dater==null) System.out.println("la date de retrait est nulle");
-			if (dated==null) System.out.println("la date de retrait est nulle");
 			if(dated.after(dater))
 			{
 				test_depot_avant_retrait = false;
