@@ -42,10 +42,10 @@ public class ProdCons implements Tampon {
 		if (cons_should_die()) notifyAll();
 	}
 	public synchronized boolean  cons_should_die (){
-		boolean res = (nb_prod_alive==0) && (enAttente==0);
+		boolean res = (nb_prod_alive<=0) && (enAttente<=0);
 		if (res) 
 			notifyAll();
-		return (nb_prod_alive==0) && (enAttente==0);
+		return res;
 	}
 	@Override
 	public int enAttente() {
@@ -54,10 +54,14 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
-		while (enAttente==0){
+		while (enAttente<=0 && !cons_should_die()){
 			/*notEmpty.*/wait();
 		}
 		Message m = tampon[index_lecture];
+		if (m==null)	//TODO bêrk, c'est dégeu, faut ptetre changer ça
+		{
+			return null;
+		}
 		num2++;
 		((MessageX)m).set_num2(num2);
 		index_lecture= (index_lecture+1)%taille;

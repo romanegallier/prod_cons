@@ -56,11 +56,13 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=(MessageX) tampon.get(this);
-				obs.retraitMessage(this, m);
-//				m.set_date_retrait(new Date());
+				if (m!= null){ 
+					obs.retraitMessage(this, m);
+//					m.set_date_retrait(new Date());
 
-				je_parle("je viens de get le message : "+m.toString());
-				nbMessage++;
+					je_parle("je viens de get le message : "+m.toString());
+					nbMessage++;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				System.out.println("petit probleme1\n");
@@ -73,20 +75,22 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				
 			}
 		
-			
-			temp_attente=this.temp_traitement.next();
-			try {
-				obs.consommationMessage(this, m, temp_attente);
-				sleep(temp_attente);
-			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
-				e.printStackTrace();
-			} catch (ControlException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (m!= null) {
+				temp_attente=this.temp_traitement.next();
+				try {
+					obs.consommationMessage(this, m, temp_attente);
+					sleep(temp_attente);
+				} catch (InterruptedException e) {
+					System.out.println("J'ai pas reussi a attendre ...\n");
+					e.printStackTrace();
+				} catch (ControlException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				m.set_date_consommation(new Date());
 			}
 			
-			m.set_date_consommation(new Date());
+			
 			
 		}
 		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");

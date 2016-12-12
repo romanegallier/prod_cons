@@ -1,4 +1,4 @@
-package src.prodcons.v1;
+package prodcons.v1;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,8 +55,11 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				m=(MessageX) tampon.get(this);
 //				m.set_date_retrait(new Date());
 
-				je_parle("je viens de get le message : "+m.toString());
-				nbMessage++;
+				if(m!=null)
+				{
+					je_parle("je viens de get le message : "+m.toString());
+					nbMessage++;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				System.out.println("petit probleme1\n");
@@ -78,7 +81,8 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				e.printStackTrace();
 			}
 			
-			m.set_date_consommation(new Date());
+			if(m!=null)	//TODO ça aussi
+				m.set_date_consommation(new Date());
 			
 		}
 		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");

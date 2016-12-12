@@ -45,16 +45,28 @@ public class ProdCons implements Tampon {
 	}
 	
 
-	public synchronized void nv_prod (){
+	public  void nv_prod (){
+		lock.lock();
 		nb_prod_alive ++;
+		lock.unlock();
 	}
 	
-	public synchronized void fin_prod(){
+	public void fin_prod(){
+		System.out.println("je rentre ici\n");
+		lock.lock();
+		System.out.println("je rentre ici2\n");
 		nb_prod_alive --;
-		if (cons_should_die()) notifyAll();
+		if (nb_prod_alive==0){notEmpty.signal();}
+		lock.unlock();
+	
 	}
-	public synchronized boolean  cons_should_die (){
-		return (nb_prod_alive==0) && (enAttente==0);
+	public boolean  cons_should_die (){
+		lock.lock();
+		try{
+			return (nb_prod_alive==0) && (enAttente==0);
+		}finally{
+			lock.unlock();
+		}
 	}
 	@Override
 	public int enAttente() {
@@ -63,15 +75,23 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public Message get(_Consommateur arg0)  throws InterruptedException {
+		System.out.println("je suis le prod" + arg0.toString()+ "et je demande le lock\n");	
 	     lock.lock();
+	     System.out.println("je suis le prod" + arg0.toString()+ "j'ai le lock\n");
 	     try {
-	       while (enAttente == 0)
-	         notFull.await();
-	       Message m = tampon[index_lecture];
-	       index_lecture= (index_lecture+1)%taille;
-	       enAttente --;
-	       notEmpty.signal();
-	       return m;
+	       while (enAttente == 0 && ! cons_should_die()){  //TODO estce que le while est necesaire
+	    	 System.out.println("je suis le prod" + arg0.toString()+ "et je me bloque dans le not EMpty\n"); 
+	         notEmpty.await();
+	         System.out.println("je suis le prod" + arg0.toString()+ "et je sort du not EMpty\n");
+	       }
+	       if (! cons_should_die()){
+	    	   Message m = tampon[index_lecture];
+	    	   index_lecture= (index_lecture+1)%taille;
+	    	   enAttente --;
+	    	   notFull.signal();
+	    	   return m;
+	       }
+	       else {notEmpty.signal();return null;}// cas a traiter
 	     } finally {
 	       lock.unlock();
 	     }
@@ -83,7 +103,7 @@ public class ProdCons implements Tampon {
 		lock.lock();
 		try {
 			while (enAttente == taille)
-				notEmpty.await();
+				notFull.await();
 			num++;
 			((MessageX)arg1).set_num(num);
 			tampon[index_ecriture] = arg1;
@@ -93,7 +113,7 @@ public class ProdCons implements Tampon {
 			((MessageX) arg1).set_date_envoi(new Date());
 			System.out.println("Je put le message "+num);
 
-			notFull.signal();
+			notEmpty.signal();
 	     } finally {
 	    	 lock.unlock();
 	     }
@@ -155,7 +175,7 @@ public class ProdCons implements Tampon {
 		System.out.println("Test : On affiche les temps de dépôt et retrait de chaque message :");
 		for(Message m : l_messages)
 		{
-	
+			System.out.println(m.toString());
 			//on vérifie si le test sur l'ordre de retrait des messages est valide en regardant si le message est retiré après le précédent.
 			if(m != l_messages.get(0) && dater.after(((MessageX) m).get_date_retrait()))
 			{
