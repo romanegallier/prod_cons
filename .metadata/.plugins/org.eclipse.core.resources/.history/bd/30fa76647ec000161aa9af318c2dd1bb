@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import jus.poc.prodcons.*;
-
+import prodcons.v3.FinProgExeption;
 
 public class Consommateur extends Acteur implements _Consommateur  {
 
@@ -64,11 +64,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			}catch (FinProgExeption e){
 				b=false;
 				System.out.println("je suis dans l'exeption finprog");
-			} catch (Exception e) {
-				System.out.println("petit probleme 2");
-				
-				e.printStackTrace();
-			}
+					
 			
 			if (b){
 				try {

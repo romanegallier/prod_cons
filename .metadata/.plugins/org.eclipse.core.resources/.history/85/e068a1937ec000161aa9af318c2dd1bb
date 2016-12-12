@@ -66,7 +66,7 @@ public class ProdCons implements Tampon {
 	}
 
 	@Override
-	public Message get(_Consommateur arg0) throws FinProgExeption,Exception, InterruptedException {
+	public Message get(_Consommateur arg0) throws Exception, InterruptedException,FinProgExeption {
 
 		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
 		conso.je_parle("j'arrive dans le get");
