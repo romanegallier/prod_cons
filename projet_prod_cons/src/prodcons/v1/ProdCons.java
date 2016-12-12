@@ -54,12 +54,14 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
+		((Consommateur) arg0).je_parle("Je suis entré dans le get");
 		while (enAttente==0){
 			if(cons_should_die())
 			{
 				Thread.currentThread().interrupt();
 			}
 			/*notEmpty.*/wait();
+			((Consommateur) arg0).je_parle("On vient de me réveiller !");
 		}
 		Message m = tampon[index_lecture];
 /*		if (m==null)	//TODO bêrk, c'est dégeu, faut ptetre changer ça
