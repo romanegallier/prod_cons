@@ -56,10 +56,18 @@ public class Consommateur extends Acteur implements _Consommateur  {
 
 				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
+				temp_attente=this.temp_traitement.next();
+
+				sleep(temp_attente);
+				
+				m.set_date_consommation(new Date());
+
+			
+			
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				je_parle("petit probleme1\n");
-				e.printStackTrace();
+//				e.printStackTrace();
 				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -68,18 +76,9 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				
 			}
 					
-			temp_attente=this.temp_traitement.next();
-
-			try {
-				sleep(temp_attente);
-			} catch (InterruptedException e) {
-				je_parle("J'ai pas reussi a attendre ...\n");
-				e.printStackTrace();
-			}
-			
-			m.set_date_consommation(new Date());
 			
 		}
+		
 		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 
