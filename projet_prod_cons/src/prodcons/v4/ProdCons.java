@@ -22,11 +22,11 @@ public class ProdCons implements Tampon {
 	private Semaphore notFull;
 	private Semaphore notEmpty;
 	private Semaphore mutex;
-	private Semaphore synchrone;
+	private Semaphore t_synchrone [];
 	private int nb_prod_alive = 0;
 	private Semaphore prodSync;
 
-	private Semaphore mutex2 = new Semaphore(1);
+//	private Semaphore mutex2 = new Semaphore(1);
 	//private Condition notEmpty, notFull;
 	
 	
@@ -40,7 +40,7 @@ public class ProdCons implements Tampon {
 		notFull= new Semaphore(taille);
 		notEmpty= new Semaphore(0);
 		mutex= new Semaphore(1);
-		synchrone = new Semaphore(0);
+		t_synchrone = new Semaphore [taille];
 		prodSync = new Semaphore(0);
 		num = 0;
 		l_messages = new LinkedList<Message>();
@@ -86,10 +86,28 @@ public class ProdCons implements Tampon {
 		}
 	
 		conso.je_parle("j'ai passé notEmpty.P()");
-		Message m = tampon[index_lecture];
+
 		mutex.P();
-		((MessageX)m).incrNbConsommateurs();
-		mutex.V();
+		Message m = tampon[index_lecture]; //synchrone = tab_semaphores[index_lecture]. (dans le put on met un message dans le tampon et un new Semaphore(0) dans le tableau au même indice
+		Semaphore synchrone = t_synchrone[index_lecture];
+		((MessageX) m).incrNbConsommateurs();
+		if(((MessageX)m).get_nbExemplaires()==((MessageX)m).get_nbConsommateurs())
+		{
+			enAttente --;
+			index_lecture= (index_lecture +1)%taille;
+			synchrone.V();
+			mutex.V();
+			prodSync.V(); 
+		}
+		else
+		{
+			mutex.V();
+			synchrone.P();
+			synchrone.V();
+			//J'en suis là. Il est tard mais je me demande si un tableau de sémaphores serait bien.
+			//ça permettrait de faire semaphore.V() juste ici. (pas besoin de décrémenter ?)
+		}
+		//à partir de là j'ai pas encore regardé
 		System.out.println(((MessageX)m).get_nbConsommateurs());
 		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
 		{
@@ -117,8 +135,6 @@ public class ProdCons implements Tampon {
 		
 		if (((MessageX)m).get_nbConsommateurs()<=0){
 			System.out.println("je suis le dernier conso");
-			enAttente --;
-			index_lecture= (index_lecture +1)%taille;
 			prodSync.V();
 			notFull.V();
 		}
@@ -131,7 +147,8 @@ public class ProdCons implements Tampon {
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		Producteur pro = ((Producteur) arg0); //TODO à retirer
 		pro.je_parle("J'essaye de mettre un message\n");
-
+		Semaphore synchrone = new Semaphore(0);
+		
 		notFull.P();
 		System.out.println(" il y a de la place\n");
 		mutex.P();
@@ -140,6 +157,7 @@ public class ProdCons implements Tampon {
 		num++;
 		((MessageX)arg1).set_num(num);
 		tampon[index_ecriture]= arg1;
+		t_synchrone[index_ecriture] = synchrone;
 		System.out.println(((MessageX)arg1).get_nbExemplaires()+ "   "+ index_ecriture);
 
 		
@@ -147,7 +165,7 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		((Producteur) arg0).je_parle("Je put le message "+num+ "en "+((MessageX) arg1).get_nbExemplaires()+ "   "+((MessageX) arg1).get_nbConsommateurs());
+		((Producteur) arg0).je_parle("Je put le message "+num+ " en "+((MessageX) arg1).get_nbExemplaires()+ " exemplaires   nbConso =  "+((MessageX) arg1).get_nbConsommateurs());
 
 		mutex.V();
 		for(int i = 0; i < ((MessageX) arg1).get_nbExemplaires(); i++)
@@ -155,15 +173,11 @@ public class ProdCons implements Tampon {
 			notEmpty.V();
 		}
 		//pro.je_parle("j'ai passé notEmpty.V()");
-		prodSync.P(); /*Cette ligne bloque le producteur.
-		C'est important de le faire après le mutex.V() et le notEmpty.V() car ça permet de laisser d'autres acteurs passer.
-		Le producteur a donc déposé un message et attend que les consommateurs soient assez nombreux pour pouvoir continuer 
-		---
-		Ce producteur sera débloqué par le dernier consommateur à arriver dans le get (voir la méthode get)
-		*/
+		prodSync.P(); 
 		//pro.je_parle("je me réveille");
-		((MessageX) arg1).je_me_reveille();
-		if (((MessageX) arg1).reveil_necessaire())synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
+//		((MessageX) arg1).je_me_reveille();
+//		if (((MessageX) arg1).reveil_necessaire())
+//		synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
 		/* Quand le producteur est réveillé,
 		 *  ça veut dire que tous les consommateurs nécessaires sont réunis pour consommer le message
 		 *  Il faut que le producteur réveille un consommateur endormi (ici ce sera le premier consommateur arrivé dans le get)

@@ -57,6 +57,16 @@ public class MessageX implements Message{
 	
 	
 	/**
+	 * retourne nbExemplaire - nbConsommateurs
+	 * @return nbExemplaires-nbConsommateurs
+	 */
+	public int nbConso_attendus()
+	{
+		return nbExemplaires - nbConsommateurs;
+	}
+	
+	
+	/**
 	 * décrémente le nombre de consommateurs essayant de retirer le message puis indique si il reste un consommateur à réveiller ou non
 	 * @return true si il reste des consommateur à reveiller. Faux sinon
 	 */
