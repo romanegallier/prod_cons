@@ -60,14 +60,8 @@ public class Producteur extends Acteur implements _Producteur  {
 			}
 			
 			try {
-//				je_parle("pre put le tampon a "+tampon.enAttente()+ " message(s) en attente et est de taille "+tampon.taille());
-//				System.out.println("pre put : tampon : " + ((ProdCons) tampon).toString());
 				tampon.put(this, m);
 				nbMessagesProduits++;
-//				m.set_date_envoi(new Date());  ça ne convient pas ici car on est sorti de la section critique
-//				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
-//				System.out.println("post put : tampon : " + ((ProdCons) tampon).toString());
-//				je_parle("post put le tampon a "+tampon.enAttente()+ "messages en attente et est de taille "+tampon.taille() +"\n");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -87,7 +81,10 @@ public class Producteur extends Acteur implements _Producteur  {
 		return Acteur.typeProducteur;
 	}
 	
-	//A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
+	/**
+	 * A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
+	 * @return booleen assurant que chaque message créé a été déposé.
+	 */
 	public boolean messages_tous_deposes()
 	{
 		return nbMessage==nbMessagesProduits;

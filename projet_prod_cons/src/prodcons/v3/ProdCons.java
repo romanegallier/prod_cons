@@ -15,14 +15,12 @@ public class ProdCons implements Tampon {
 	private int index_lecture;// indice de la zone du tampon ou il faut lire
 	private int index_ecriture;// indice de la zone du tamtpon ou il faut ecrire
 	private int enAttente;// nombre de message present dans le tampon
-	//private Condition notEmpty, notFull;
 	private Semaphore notFull;
 	private Semaphore notEmpty;
 	private Semaphore mutex;
 	
 	private int nb_prod_alive;
 	private int  num=0;
-	private int  num2=0;
 	
 	private List<Message> l_messages;
 	
@@ -61,8 +59,7 @@ public class ProdCons implements Tampon {
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException {
 		notEmpty.P();
 		if (cons_should_die()){
-			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
+			notEmpty.V();
 			throw new FinProgExeption();
 			
 		}
@@ -72,13 +69,9 @@ public class ProdCons implements Tampon {
 			index_lecture= (index_lecture+1)%taille;
 			enAttente --;
 			((MessageX) m).set_date_retrait(new Date());
-			System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
 			
 			mutex.V();
 			notFull.V();
-			if (cons_should_die()){
-				notEmpty.V();// TODO peut etre a enlever
-			}
 			return m;
 		}
 	}

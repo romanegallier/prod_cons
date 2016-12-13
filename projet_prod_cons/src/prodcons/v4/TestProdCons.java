@@ -46,7 +46,7 @@ public class TestProdCons  extends Simulateur {
 				try {
 					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenDeProduction, deviationNombreMoyenDeProduction, nombreMoyenNbExemplaire, deviationNombreMoyenNbExemplaire);
 					p.add((Producteur)prod); 
-					obs.newProducteur( prod);
+//					obs.newProducteur( prod);
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -58,7 +58,7 @@ public class TestProdCons  extends Simulateur {
 			for (int i=0;i<=nbCons;i++){
 				try {
 					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon));
-					obs.newConsommateur(c.get(i));
+//					obs.newConsommateur(c.get(i));
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -75,7 +75,6 @@ public class TestProdCons  extends Simulateur {
 			if (p.get(i)==null) System.out.println("petit probleme\n");
 			else System.out.println(p.get(i).toString());
 			p.get(i).start();
-			//b=b && p.get(i).isAlive();
 		}
 		for (int i=0;i<nbCons;i++){
 			System.out.println(c.get(i).toString());

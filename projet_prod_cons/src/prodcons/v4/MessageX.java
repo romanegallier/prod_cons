@@ -43,6 +43,11 @@ public class MessageX implements Message{
 		numero_tris=n;
 	}
 	
+	public int get_num2()
+	{
+		return numero_bis;
+	}
+	
 	//pour debug :
 	public int get_numero()
 	{
@@ -151,6 +156,7 @@ public class MessageX implements Message{
 	
 	public void set_date_consommation(Date date)
 	{
+		if(date==null) System.out.println("\t\t  EEEEEEEOOOOOOOOO J'AI MIS UNE DATE DE CONSOMMATION NULLEEEEUH");
 		l_date_consommation.add(date);
 	}
 	public ArrayList<Date> get_date_consommation()
@@ -160,7 +166,7 @@ public class MessageX implements Message{
 	
 	public String toString (){
 		
-		return "Produit à " + Format_HeureMinuteSeconde(date_production)+"Source : "+source.toString()+"\tNumero : "+String.valueOf(numero)+" Contenu : "+contenu  + "\tmessage n°" + String.valueOf(numero_bis) + "\n";
+		return "Produit à " + Format_HeureMinuteSeconde(date_production)+"Source : "+source.toString()+"\tNumero : "+String.valueOf(numero)+" Contenu : "+contenu  + "\tmessage n°" + String.valueOf(numero_bis) + " et nbExemplaires = "+nbExemplaires+"\n";
 	}
 
 	public void set_nbExemplaires(int i) {

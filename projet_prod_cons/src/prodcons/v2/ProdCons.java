@@ -22,7 +22,6 @@ public class ProdCons implements Tampon {
 	
 	private int nb_prod_alive;
 	private int  num=0;
-	private int  num2=0;
 	
 	private List<Message> l_messages;
 	
@@ -65,7 +64,6 @@ public class ProdCons implements Tampon {
 		notEmpty.P();
 		if (cons_should_die()){
 			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
 			throw new FinProgExeption();
 			
 		}
@@ -75,14 +73,10 @@ public class ProdCons implements Tampon {
 		index_lecture= (index_lecture+1)%taille;
 		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
-		System.out.println("Je get le message " +((MessageX) m).get_numero());//TODO probleme avec le numero du message
 		
 		mutex.V();
 		notFull.V();
-		if (cons_should_die()){
-			notEmpty.V();// peut etre a enlever
-			
-		}
+
 		return m;
 		
 		}
@@ -91,7 +85,6 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
-		System.out.println("J'essaye de mettre un message\n");
 		notFull.P();
 		mutex.P();
 		num++;
@@ -101,7 +94,6 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		System.out.println("Je put le message "+num);
 		mutex.V();
 		notEmpty.V();
 		
@@ -112,6 +104,9 @@ public class ProdCons implements Tampon {
 		return this.taille;
 	}
 	
+	/**
+	 * affiche graphiquement le tampon. 'X' indique la présence d'un message et ' ' une place dans le tampon.
+	 */
 	@Override
 	public String toString()
 	{
@@ -201,10 +196,6 @@ public class ProdCons implements Tampon {
 
 			System.out.println("  dépôt : " + s_dated+ "    retrait : " + s_dater);
 		}
-		// le delai entre chaque message d'un producteur respecte une loi proba
-		//TODO
-		//pareil pour les consos
-		//TODO
 		System.out.println("fifo : Chaque message a-t-il été retiré dans l'ordre où il a été déposé ?");
 		if(test_fifo_valide) 
 		{

@@ -47,7 +47,6 @@ public class Producteur extends Acteur implements _Producteur  {
 	public void run() {
 		((ProdCons) tampon).nv_prod();
 		for (int i=0; i <nbMessage; i++){
-			je_parle("je produis le message "+(i+1) +" sur "+nbMessage +"\n");
 			MessageX m = new MessageX(this, i, "patate", new Date());
 			
 			int tempAttente= temp_prod.next();
@@ -55,19 +54,12 @@ public class Producteur extends Acteur implements _Producteur  {
 			try {
 				sleep(tempAttente);
 			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
 				e.printStackTrace();
 			}
 			
 			try {
-//				je_parle("pre put le tampon a "+tampon.enAttente()+ " message(s) en attente et est de taille "+tampon.taille());
-//				System.out.println("pre put : tampon : " + ((ProdCons) tampon).toString());
 				tampon.put(this, m);
 				nbMessagesProduits++;
-//				m.set_date_envoi(new Date());  ça ne convient pas ici car on est sorti de la section critique
-//				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
-//				System.out.println("post put : tampon : " + ((ProdCons) tampon).toString());
-//				je_parle("post put le tampon a "+tampon.enAttente()+ "messages en attente et est de taille "+tampon.taille() +"\n");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -98,6 +90,10 @@ public class Producteur extends Acteur implements _Producteur  {
 		return "Producteur "+this.identification();
 	}
 	
+	/**
+	 * fonction de debuggage, équivalent d'un syso avec en bonus la date et la source du message
+	 * @param message
+	 */
 	public void je_parle(String message)
 	{
 		System.out.println(MessageX.Format_HeureMinuteSeconde(new Date()) +this.toString()+"\t"+ message);
