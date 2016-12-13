@@ -24,11 +24,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.message_lu= new ArrayList<Message>();
 		this.observations=observations;
-		try {
-			observations.newConsommateur(this);
-		} catch (ObservationExeption e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override

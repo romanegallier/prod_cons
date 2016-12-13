@@ -25,11 +25,7 @@ public class Producteur extends Acteur implements _Producteur  {
 		obs= observateur;
 		obs.newProducteur(this);
 		this.observations=observations;
-		try {
-			observations.newProducteur(this);
-		} catch (ObservationExeption e) {
-			e.printStackTrace();
-		}
+		observation.newProducteur(this);
 	}
 
 	@Override
