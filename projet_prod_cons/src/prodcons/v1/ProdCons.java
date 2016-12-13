@@ -14,7 +14,6 @@ public class ProdCons implements Tampon {
 	private int index_lecture;// indice de la zone du tampon ou il faut lire
 	private int index_ecriture;// indice de la zone du tamtpon ou il faut ecrire
 	private int enAttente;// nombre de message present dans le tampon
-	//private Condition notEmpty, notFull;
 	private int nb_prod_alive;
 	private int  num=0;
 	private int  num2=0;
@@ -54,35 +53,28 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public synchronized Message get(_Consommateur arg0) throws Exception, InterruptedException {
-		((Consommateur) arg0).je_parle("Je suis entré dans le get");
 		while (enAttente==0){
 			if(cons_should_die())
 			{
-				Thread.currentThread().interrupt();
+				Thread.currentThread().interrupt(); //si le consommateur doit mourrir, il subit une interruption
 			}
 
-			/*notEmpty.*/wait();
-			((Consommateur) arg0).je_parle("On vient de me réveiller !");
+			wait(); //tant que le tampon est vide, le consommateur se bloque dans wait()
 		}
 		Message m = tampon[index_lecture];
-/*		if (m==null)	//TODO bêrk, c'est dégeu, faut ptetre changer ça
-		{
-			return null;
-		} */
-		num2++;
-		((MessageX)m).set_num2(num2);
+
 		index_lecture= (index_lecture+1)%taille;
 		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
 		((Consommateur) arg0).je_parle("Je get le message " + num2);
-		/*notFull.signal()*/ notifyAll();
+		notifyAll();
 		return m;
 	}
 
 	@Override
 	public synchronized void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
 		while (enAttente==taille){
-			/*notFull.*/wait();
+			wait(); //le producteur doit attendre tant que le tampon est plein
 		}
 		num++;
 		((MessageX)arg1).set_num(num);
@@ -91,8 +83,7 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		((Producteur) arg0).je_parle("Je put le message "+num);
-		/*notEmpty.signal()*/ notifyAll();
+		notifyAll();
 	}
 
 	@Override

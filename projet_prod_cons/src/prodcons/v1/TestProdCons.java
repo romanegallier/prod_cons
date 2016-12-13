@@ -79,7 +79,7 @@ public class TestProdCons  extends Simulateur {
 
 	public static void main(String[] args) {
 
-		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml");
+		TestProdCons tpd = new TestProdCons(new Observateur(),"option2.xml");
 		
 		tpd.start();
 		

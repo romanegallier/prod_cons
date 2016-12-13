@@ -15,7 +15,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		// TODO verifier le type
 		this.tampon=tampon;
 		this.nbMessage=0;
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
@@ -54,7 +53,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 				m=(MessageX) tampon.get(this);
 
-				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 				temp_attente=this.temp_traitement.next();
 
@@ -79,7 +77,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 		}
 		
-		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 
 	public static int Cons (){

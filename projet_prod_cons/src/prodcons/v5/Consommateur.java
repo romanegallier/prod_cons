@@ -64,7 +64,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				e.printStackTrace();
 
 			}catch (FinProgExeption e){
-				System.out.println("je rentre la ");
 				b=false;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -74,16 +73,13 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			if (b){ 
 				try {
 					obs.retraitMessage(this, m);
-	//				m.set_date_retrait(new Date());
 	
-					je_parle("je viens de get le message : "+m.toString());
 					nbMessage++;
 					temp_attente=this.temp_traitement.next();
 				
 					obs.consommationMessage(this, m, temp_attente);
 					sleep(temp_attente);
 				} catch (InterruptedException e) {
-					System.out.println("J'ai pas reussi a attendre ...\n");
 					e.printStackTrace();
 				} catch (ControlException e) {
 					// TODO Auto-generated catch block
@@ -93,7 +89,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			}
 		}	
 
-		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 	public static int Cons (){
 		return Acteur.typeConsommateur;

@@ -12,22 +12,20 @@ import jus.poc.prodcons.*;
 
 public class ProdCons implements Tampon {
 	
-	private int num; //numero du message TODO peut être à supprimer
-	private List<Message> l_messages; //TODO peut être à supprimer 
+	private int num; //numero du message 
+	private List<Message> l_messages; //liste des messages passés 
 	private int taille;// taille du buffer
 	private Message tampon[];// buffer
 	private int index_lecture;// indice de la zone du tampon ou il faut lire
 	private int index_ecriture;// indice de la zone du tamtpon ou il faut ecrire
 	private int enAttente;// nombre de message present dans le tampon
-	private Semaphore notFull;
-	private Semaphore notEmpty;
-	private Semaphore mutex;
+	private Semaphore notFull; //bloque si le tampon est plein
+	private Semaphore notEmpty; // bloque si le tampon est vide
+	private Semaphore mutex; 
 	private Semaphore t_synchrone [];
 	private int nb_prod_alive = 0;
 	private Semaphore prodSync;
 
-//	private Semaphore mutex2 = new Semaphore(1);
-	//private Condition notEmpty, notFull;
 	
 	
 	// constructeur 
@@ -52,7 +50,6 @@ public class ProdCons implements Tampon {
 	
 	public synchronized void fin_prod(){
 		nb_prod_alive --;
-		System.out.println("je suis la \n)"+enAttente+ "  "+ nb_prod_alive);
 		if (cons_should_die()) notEmpty.V();
 	}
 	public synchronized boolean  cons_should_die (){
@@ -65,30 +62,26 @@ public class ProdCons implements Tampon {
 		return this.enAttente;
 	}
 
+	
 	@Override
 	public Message get(_Consommateur arg0) throws FinProgExeption,Exception, InterruptedException {
 
-		Consommateur conso = ((Consommateur) arg0); //TODO à retirer. je le garde pour le moment pour faire je_parle
-		conso.je_parle("j'arrive dans le get");
 		
 		if(cons_should_die())
 		{
-			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
+			notEmpty.V();
 			throw new FinProgExeption();
 			
 		}
-		notEmpty.P(); //Il faut empêcher le thread d'arriver ici si cons_should_die
+		notEmpty.P(); 
 		if (cons_should_die()){
-			notEmpty.V();// peut etre a enlever
-			((Consommateur)arg0).je_parle("je passe par la\n ");
+			notEmpty.V();
 			throw new FinProgExeption();
 		}
 	
-		conso.je_parle("j'ai passé notEmpty.P()");
 
 		mutex.P();
-		Message m = tampon[index_lecture]; //synchrone = tab_semaphores[index_lecture]. (dans le put on met un message dans le tampon et un new Semaphore(0) dans le tableau au même indice
+		Message m = tampon[index_lecture]; 
 		Semaphore synchrone = t_synchrone[index_lecture];
 		((MessageX) m).incrNbConsommateurs();
 		if(((MessageX)m).get_nbExemplaires()==((MessageX)m).get_nbConsommateurs())
@@ -97,91 +90,51 @@ public class ProdCons implements Tampon {
 			index_lecture= (index_lecture +1)%taille;
 			synchrone.V();
 			mutex.V();
-			prodSync.V(); 
 		}
 		else
 		{
 			mutex.V();
 			synchrone.P();
 			synchrone.V();
-			//J'en suis là. Il est tard mais je me demande si un tableau de sémaphores serait bien.
-			//ça permettrait de faire semaphore.V() juste ici. (pas besoin de décrémenter ?)
 		}
-		//à partir de là j'ai pas encore regardé
-		System.out.println(((MessageX)m).get_nbConsommateurs());
-		if(((MessageX)m).get_nbExemplaires()!=((MessageX)m).get_nbConsommateurs())
-		{
-			synchrone.P();	
-			((Consommateur) arg0).je_parle("J'ai passé synchrone.P()");
-		}
-		//conso.je_parle("je suis sorti du premier if");
-		mutex.P();
-		((MessageX) m).decrNbConsommateurs();
-		mutex.V();
-		if(((MessageX)m).get_nbConsommateurs()>0) 
-		{ 
-			synchrone.V();
-
-
-			//conso.je_parle("J'ai passé le synchrone.V()");
-		}
-		//conso.je_parle("getProducteur_endormi a retourné : "+((MessageX) m).getProducteur_endormi());
-		//conso.je_parle("J'ai passé le deuxième if");
 		mutex.P();
 
 		((MessageX) m).set_date_retrait(new Date());
-		((Consommateur) arg0).je_parle("Je get le message " +(((MessageX) m).get_numero()+1 +" en attente ="+ enAttente));//TODO probleme avec le numero du message
 		
-		
+		((MessageX) m).decrNbConsommateurs();
 		if (((MessageX)m).get_nbConsommateurs()<=0){
-			System.out.println("je suis le dernier conso");
 			prodSync.V();
 			notFull.V();
 		}
-		mutex.V();
+		mutex.V();   
 		return m;
 		
 	}
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
-		Producteur pro = ((Producteur) arg0); //TODO à retirer
-		pro.je_parle("J'essaye de mettre un message\n");
 		Semaphore synchrone = new Semaphore(0);
 		
 		notFull.P();
-		System.out.println(" il y a de la place\n");
 		mutex.P();
-		System.out.println("Le prod "+arg0.toString()+ "prend le mutex\n");
 		
 		num++;
 		((MessageX)arg1).set_num(num);
 		tampon[index_ecriture]= arg1;
 		t_synchrone[index_ecriture] = synchrone;
-		System.out.println(((MessageX)arg1).get_nbExemplaires()+ "   "+ index_ecriture);
 
 		
 		index_ecriture = (index_ecriture +1)%taille;
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		((Producteur) arg0).je_parle("Je put le message "+num+ " en "+((MessageX) arg1).get_nbExemplaires()+ " exemplaires   nbConso =  "+((MessageX) arg1).get_nbConsommateurs());
 
 		mutex.V();
 		for(int i = 0; i < ((MessageX) arg1).get_nbExemplaires(); i++)
 		{
 			notEmpty.V();
 		}
-		//pro.je_parle("j'ai passé notEmpty.V()");
 		prodSync.P(); 
-		//pro.je_parle("je me réveille");
-//		((MessageX) arg1).je_me_reveille();
-//		if (((MessageX) arg1).reveil_necessaire())
-//		synchrone.V(); //peut être vérifier que le nbExemplaires est > 1. sinon .V() n'a personne à réveiller
-		/* Quand le producteur est réveillé,
-		 *  ça veut dire que tous les consommateurs nécessaires sont réunis pour consommer le message
-		 *  Il faut que le producteur réveille un consommateur endormi (ici ce sera le premier consommateur arrivé dans le get)
-		 */
 
 	}
 
@@ -268,6 +221,7 @@ public class ProdCons implements Tampon {
 			
 			
 			//On vérifie que chaque message est consommé avant la fin du programme
+			if(datec==null || date_arret==null) System.out.println("datec = "+datec+" et date_arret = "+date_arret+ " et la longueur de la liste de retrait est : "+((MessageX) m).get_date_consommation().size());
 			if(datec.after(date_arret))
 			{
 				test_messages_consommes = false;
@@ -278,7 +232,7 @@ public class ProdCons implements Tampon {
 			String s_dated = MessageX.Format_HeureMinuteSeconde(dated);
 			String s_dater = MessageX.Format_HeureMinuteSeconde(dater);
 
-			System.out.println("  dépôt : " + s_dated+ "    retrait : " + s_dater);
+			System.out.println("message n° :" + ((MessageX) m).get_num2() +" ->  dépôt : " + s_dated+ "    retrait : " + s_dater);
 		}
 		// le delai entre chaque message d'un producteur respecte une loi proba
 		//TODO

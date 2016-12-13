@@ -10,8 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import jus.poc.prodcons.*;
-import prodcons.v3.FinProgExeption;
-import prodcons.v3.MessageX;
+
 
 public class ProdCons implements Tampon {
 	
@@ -23,7 +22,6 @@ public class ProdCons implements Tampon {
 
 	private int nb_prod_alive;
 	private int  num=0;
-	private int  num2=0;
 	
 	private List<Message> l_messages;
 	
@@ -55,11 +53,8 @@ public class ProdCons implements Tampon {
 	
 	public void fin_prod(){
 		lock.lock();
-		System.out.println("je rentre ici\n");
-	
-		System.out.println("je rentre ici2\n");
 		nb_prod_alive --;
-		if (nb_prod_alive==0){notEmpty.signal();System.out.println("il y a plus de prod je reveille quelqu'un");}
+		if (nb_prod_alive==0){notEmpty.signal();}
 		lock.unlock();
 	
 	}
@@ -74,21 +69,15 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public Message get(_Consommateur arg0)  throws InterruptedException, FinProgExeption {
-		System.out.println("je suis le prod" + arg0.toString()+ "et je demande le lock\n");	
 	     lock.lock();
-	     System.out.println("je suis le prod" + arg0.toString()+ "j'ai le lock\n");
 	     if (cons_should_die()){
-        	 System.out.println("je doit mourir, je reveille les autres");
         	 notEmpty.signalAll();
 	    	   throw new FinProgExeption();
 	       }
 	     try {
-	       while (enAttente == 0 ){  //TODO estce que le while est necesaire
-	    	 System.out.println("je suis le prod" + arg0.toString()+ "et je me bloque dans le not EMpty\n"); 
+	       while (enAttente == 0 ){ 
 	         notEmpty.await();
-	         System.out.println("je suis le prod" + arg0.toString()+ "et je sort du not EMpty\n");
 		     if (cons_should_die()){
-	        	 System.out.println("je doit mourir, je reveille les autres");
 	        	 notEmpty.signalAll();
 		    	   throw new FinProgExeption();
 		       }
@@ -101,7 +90,6 @@ public class ProdCons implements Tampon {
 	    	   notFull.signal();
 				if (cons_should_die()){
 					notEmpty.signalAll();// TODO peut etre a enlever
-					System.out.println("j'ai lu et je doit mourir je reveille les autres");
 				}
 			
 	    	   return m;
