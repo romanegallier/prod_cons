@@ -7,6 +7,7 @@ import jus.poc.prodcons.*;
 
 public class TestProdCons  extends Simulateur {
 	private Observateur obs;
+	private Observations observations;
 	Tampon tampon;
 	ArrayList <Producteur> p;
 	ArrayList <Consommateur> c;
@@ -26,29 +27,29 @@ public class TestProdCons  extends Simulateur {
 		protected static int deviationNombreMoyenNbExemplaire;
 
 		
-		public TestProdCons(Observateur observateur, String option) {
+		public TestProdCons(Observateur observateur, String option, Observations observations) {
 			super(observateur);
 			this.obs=observateur;
+			
+			this.observations=observations;
 			
 			init(option);
 			try {
 				obs.init(nbProd, nbCons, nbBuffer);
+				observations.init(nbProd, nbCons, nbBuffer);
 			} catch (ControlException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			tampon = new ProdCons(nbBuffer);
 			
 			
-			Producteur prod;
+			Acteur prod;
 			p= new ArrayList<Producteur>();
 			for (int i=0;i<nbProd;i++){
 				try {
-					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenDeProduction, deviationNombreMoyenDeProduction);
+					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenDeProduction, deviationNombreMoyenDeProduction,observations);
 					p.add((Producteur)prod); 
-					obs.newProducteur( prod);
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 			
 				}
@@ -57,10 +58,8 @@ public class TestProdCons  extends Simulateur {
 			c= new  ArrayList<Consommateur>();
 			for (int i=0;i<=nbCons;i++){
 				try {
-					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon));
-					obs.newConsommateur(c.get(i));
+					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon,observations));
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 			}
@@ -85,11 +84,12 @@ public class TestProdCons  extends Simulateur {
 	}
 
 	public static void main(String[] args) {
-
-		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml");
+		Observations observations = new Observations();
+		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml",observations);
+		
 		
 		tpd.start();
-		
+		//TODO
 		//On s'arrête jusqu'à la fin de chaque consommateur (qui se produit après la fin de chaque producteur... au pire on peut aussi attendre la fin de chaque producteur... ce qu'on va faire)
 
 		for(Producteur producteur : tpd.p)
@@ -97,7 +97,6 @@ public class TestProdCons  extends Simulateur {
 			try {
 				producteur.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -107,14 +106,16 @@ public class TestProdCons  extends Simulateur {
 			try {
 				consommateur.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
-		//TODO tests !
+
 		((ProdCons) tpd.tampon).tests_temporels(new Date());
+		 
+		if (observations.verification()) System.out.println("Tout c'est bien passe ");
+		else System.out.println("Il y a eu des erreurs");
 
 	}
 	
