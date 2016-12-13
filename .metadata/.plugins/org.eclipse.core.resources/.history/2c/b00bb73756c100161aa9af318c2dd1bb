@@ -19,7 +19,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 		// TODO verifier le type
 		this.tampon=tampon;
 		this.obs= observateur;
-		obs.newConsommateur(this);
 		this.nbMessage=0;
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.message_lu= new ArrayList<Message>();

@@ -18,7 +18,6 @@ public class Producteur extends Acteur implements _Producteur  {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		obs= observateur;
-		obs.newProducteur(this);
 		nbMessage= new Aleatoire(nbMoyenProduction, deviationNbProduction).next();
 		nbMessagesProduits = 0;
 		temp_prod= new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
