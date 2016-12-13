@@ -7,16 +7,14 @@ import jus.poc.prodcons.*;
 
 public class Consommateur extends Acteur implements _Consommateur  {
 
-	//TODO mettre la version 2
 	private int nbMessage;
 	private Tampon tampon;
 	private Aleatoire temp_traitement;
 	private Observateur obs;
-	private Observations observation;
 	private ArrayList <Message> message_lu;
 
 	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
-			int deviationTempsDeTraitement, Tampon tampon, Observations observation) throws ControlException {
+			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		// TODO verifier le type
 		this.tampon=tampon;
@@ -24,7 +22,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 		this.nbMessage=0;
 		this.temp_traitement=new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.message_lu= new ArrayList<Message>();
-		this.observation=observation;
 	}
 
 	@Override
@@ -59,8 +56,7 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 				m=(MessageX) tampon.get(this);
 				obs.retraitMessage(this, m);
-				observation.retraitMessage(this, m);
-
+//				m.set_date_retrait(new Date());
 
 				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
@@ -80,14 +76,12 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			temp_attente=this.temp_traitement.next();
 			try {
 				obs.consommationMessage(this, m, temp_attente);
-				observation.consommationMessage(this, m, temp_attente);
 				sleep(temp_attente);
 			} catch (InterruptedException e) {
 				System.out.println("J'ai pas reussi a attendre ...\n");
 				e.printStackTrace();
 			} catch (ControlException e) {
-				e.printStackTrace();
-			} catch (ObservationExeption e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

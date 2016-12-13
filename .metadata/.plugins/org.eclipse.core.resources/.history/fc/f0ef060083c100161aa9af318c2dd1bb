@@ -6,19 +6,19 @@ import java.util.Date;
 import jus.poc.prodcons.*;
 
 public class Observations {
-	private ArrayList<Message> l;
-	private int init_nb_prod;
-	private int init_nb_conso;
-	private int init_nb_buffers;
-	private int nb_conso;
-	private int nb_prod;
+	ArrayList<Message> l;
+	int init_nb_prod;
+	int init_nb_conso;
+	int init_nb_buffers;
+	int nb_conso;
+	int nb_prod;
 
-	private ArrayList<Producteur> p;
-	private ArrayList<Consommateur> c;
-	private ArrayList<Message> produit;
-	private ArrayList<Message> depose;
-	private ArrayList<Message> retrait;
-	private ArrayList<Message> consomme;
+	ArrayList<Producteur> p;
+	ArrayList<Consommateur> c;
+	ArrayList<Message> produit;
+	ArrayList<Message> depose;
+	ArrayList<Message> retrait;
+	ArrayList<Message> consomme;
 	
 	public  Observations () {
 		l= new ArrayList<Message>();

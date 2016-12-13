@@ -7,7 +7,6 @@ import jus.poc.prodcons.*;
 
 public class Consommateur extends Acteur implements _Consommateur  {
 
-	//TODO mettre la version 2
 	private int nbMessage;
 	private Tampon tampon;
 	private Aleatoire temp_traitement;
