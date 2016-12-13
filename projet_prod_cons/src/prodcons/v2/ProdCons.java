@@ -53,6 +53,8 @@ public class ProdCons implements Tampon {
 	public synchronized boolean  cons_should_die (){
 		return (nb_prod_alive==0) && (enAttente==0);
 	}
+	
+	
 	@Override
 	public int enAttente() {
 		return this.enAttente;
