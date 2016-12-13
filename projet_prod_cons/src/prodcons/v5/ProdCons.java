@@ -10,8 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import jus.poc.prodcons.*;
-import prodcons.v3.FinProgExeption;
-import prodcons.v3.MessageX;
+
 
 public class ProdCons implements Tampon {
 	

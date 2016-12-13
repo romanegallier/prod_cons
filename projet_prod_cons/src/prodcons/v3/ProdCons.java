@@ -78,7 +78,6 @@ public class ProdCons implements Tampon {
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
-		System.out.println("J'essaye de mettre un message\n");
 		notFull.P();
 		mutex.P();
 		num++;
@@ -88,7 +87,6 @@ public class ProdCons implements Tampon {
 		enAttente++;
 		l_messages.add(arg1);
 		((MessageX) arg1).set_date_envoi(new Date());
-		System.out.println("Je put le message "+num);
 		mutex.V();
 		notEmpty.V();
 		
