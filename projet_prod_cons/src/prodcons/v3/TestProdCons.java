@@ -34,21 +34,18 @@ public class TestProdCons  extends Simulateur {
 			try {
 				obs.init(nbProd, nbCons, nbBuffer);
 			} catch (ControlException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			tampon = new ProdCons(nbBuffer);
 			
 			
-			Producteur prod;
+			Acteur prod;
 			p= new ArrayList<Producteur>();
 			for (int i=0;i<nbProd;i++){
 				try {
 					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenDeProduction, deviationNombreMoyenDeProduction);
 					p.add((Producteur)prod); 
-					//obs.newProducteur( prod);
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 			
 				}
@@ -58,9 +55,7 @@ public class TestProdCons  extends Simulateur {
 			for (int i=0;i<=nbCons;i++){
 				try {
 					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon));
-					//obs.newConsommateur(c.get(i));
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 			}
@@ -86,6 +81,7 @@ public class TestProdCons  extends Simulateur {
 
 		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml");
 		
+		
 		tpd.start();
 		
 		//On s'arrête jusqu'à la fin de chaque consommateur (qui se produit après la fin de chaque producteur... au pire on peut aussi attendre la fin de chaque producteur... ce qu'on va faire)
@@ -95,7 +91,6 @@ public class TestProdCons  extends Simulateur {
 			try {
 				producteur.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -105,13 +100,12 @@ public class TestProdCons  extends Simulateur {
 			try {
 				consommateur.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
-		//TODO tests !
+
 		((ProdCons) tpd.tampon).tests_temporels(new Date());
 
 	}

@@ -13,7 +13,6 @@ public class MessageX implements Message{
 	private Date date_envoi;
 	private Date date_retrait;
 	private Date date_consommation;
-	private int numero_tris;
 
 	
 	public MessageX(Producteur p , int n, String contenu,Date date ){
@@ -22,7 +21,6 @@ public class MessageX implements Message{
 		this.contenu=contenu;
 		this.date_production=date;
 		this.numero_bis=0;
-		this.numero_tris=0;
 	}
 	
 	public void set_num (int n){
@@ -35,9 +33,6 @@ public class MessageX implements Message{
 	}
 	
 
-	public void set_num2 (int n){
-		numero_tris=n;
-	}
 	
 	//pour debug :
 	public int get_numero()

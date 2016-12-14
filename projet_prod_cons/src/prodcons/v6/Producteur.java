@@ -11,17 +11,20 @@ public class Producteur extends Acteur implements _Producteur  {
 	private Aleatoire temp_prod;
 	private Tampon tampon;
 	private Observateur obs;
+	private Observations observations;
 	
 	protected Producteur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement,Tampon tampon, int nbMoyenProduction,
-			int deviationNbProduction) throws ControlException {
+			int deviationNbProduction,Observations observations) throws ControlException {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		obs= observateur;
 		nbMessage= new Aleatoire(nbMoyenProduction, deviationNbProduction).next();
 		nbMessagesProduits = 0;
 		temp_prod= new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.tampon=tampon;
+		obs= observateur;
+		obs.newProducteur(this);
+		this.observations=observations;
 	}
 
 	@Override
@@ -54,34 +57,27 @@ public class Producteur extends Acteur implements _Producteur  {
 			
 			int tempAttente= temp_prod.next();
 			
-			
-			
 			try {
-				obs.productionMessage(this, m, tempAttente);
+				obs.productionMessage(this, m,tempAttente);
+				observations.productionMessage(this, m,tempAttente);
 				sleep(tempAttente);
 			} catch (InterruptedException e) {
 				System.out.println("J'ai pas reussi a attendre ...\n");
 				e.printStackTrace();
 			} catch (ControlException e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ObservationExeption e) {
 				e.printStackTrace();
 			}
 			
 			try {
-//				je_parle("pre put le tampon a "+tampon.enAttente()+ " message(s) en attente et est de taille "+tampon.taille());
-//				System.out.println("pre put : tampon : " + ((ProdCons) tampon).toString());
 				obs.depotMessage(this, m);
+				observations.depotMessage(this, m);
 				tampon.put(this, m);
 				nbMessagesProduits++;
-//				m.set_date_envoi(new Date());  ça ne convient pas ici car on est sorti de la section critique
-//				je_parle("j'ai put le message numero : " + (m.get_numero()+1));
-//				System.out.println("post put : tampon : " + ((ProdCons) tampon).toString());
-//				je_parle("post put le tampon a "+tampon.enAttente()+ "messages en attente et est de taille "+tampon.taille() +"\n");
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
 			
@@ -96,7 +92,10 @@ public class Producteur extends Acteur implements _Producteur  {
 		return Acteur.typeProducteur;
 	}
 	
-	//A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
+	/**
+	 * A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
+	 * @return booleen assurant que chaque message créé a été déposé.
+	 */
 	public boolean messages_tous_deposes()
 	{
 		return nbMessage==nbMessagesProduits;
