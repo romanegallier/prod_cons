@@ -89,7 +89,7 @@ public class ProdCons implements Tampon {
 	    	   ((MessageX) m).set_date_retrait(new Date());
 	    	   notFull.signal();
 				if (cons_should_die()){
-					notEmpty.signalAll();// TODO peut etre a enlever
+					notEmpty.signalAll();
 				}
 			
 	    	   return m;
@@ -217,10 +217,6 @@ public class ProdCons implements Tampon {
 
 			System.out.println("  dépôt : " + s_dated+ "    retrait : " + s_dater);
 		}
-		// le delai entre chaque message d'un producteur respecte une loi proba
-		//TODO
-		//pareil pour les consos
-		//TODO
 		System.out.println("fifo : Chaque message a-t-il été retiré dans l'ordre où il a été déposé ?");
 		if(test_fifo_valide) 
 		{

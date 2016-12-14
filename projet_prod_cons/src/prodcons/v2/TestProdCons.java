@@ -42,18 +42,16 @@ public class TestProdCons  extends Simulateur {
 					prod=new Producteur(obs, tempsMoyenProduction, deviationTempsMoyenProduction, tampon, nombreMoyenDeProduction, deviationNombreMoyenDeProduction);
 					p.add((Producteur)prod); 
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 			
 				}
 			}
 			
 			c= new  ArrayList<Consommateur>();
-			for (int i=0;i<=nbCons;i++){
+			for (int i=0;i<nbCons;i++){
 				try {
 					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon));
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 			}
@@ -88,7 +86,6 @@ public class TestProdCons  extends Simulateur {
 			try {
 				producteur.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -98,15 +95,18 @@ public class TestProdCons  extends Simulateur {
 			try {
 				consommateur.join();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+
+		boolean tests = false;
 		
 		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
-		//TODO tests !
-		((ProdCons) tpd.tampon).tests_temporels(new Date());
-
+		if(tests = true)
+		{
+			//TODO tests !
+			((ProdCons) tpd.tampon).tests_temporels(new Date());
+		}
 	}
 	
 	

@@ -74,13 +74,11 @@ public class TestProdCons  extends Simulateur {
 			if (p.get(i)==null) System.out.println("petit probleme\n");
 			else System.out.println(p.get(i).toString());
 			p.get(i).start();
-			//b=b && p.get(i).isAlive();
 		}
 		for (int i=0;i<nbCons;i++){
 			System.out.println(c.get(i).toString());
 			c.get(i).start();
 		}
-		System.out.println(".5341.54.635436843");
 	}
 
 	public static void main(String[] args) {
@@ -89,7 +87,6 @@ public class TestProdCons  extends Simulateur {
 		
 		
 		tpd.start();
-		//TODO
 		//On s'arrête jusqu'à la fin de chaque consommateur (qui se produit après la fin de chaque producteur... au pire on peut aussi attendre la fin de chaque producteur... ce qu'on va faire)
 
 		for(Producteur producteur : tpd.p)
@@ -110,13 +107,16 @@ public class TestProdCons  extends Simulateur {
 			}
 		}
 		
+		boolean tests = true;
 		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
-
-		((ProdCons) tpd.tampon).tests_temporels(new Date());
-		 
-		if (observations.verification()) System.out.println("Tout c'est bien passe ");
-		else System.out.println("Il y a eu des erreurs");
-
+		
+		if(tests)
+		{
+			((ProdCons) tpd.tampon).tests_temporels(new Date());
+			 
+			if (observations.verification()) System.out.println("Tout c'est bien passe ");
+			else System.out.println("Il y a eu des erreurs");
+		}
 	}
 	
 	

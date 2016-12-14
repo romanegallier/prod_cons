@@ -7,14 +7,13 @@ import jus.poc.prodcons.*;
 
 public class MessageX implements Message{
 	private Producteur  source;
-	private int numero;		//TODO à enlever, (c'était pour des tests)
-	private int numero_bis;	//TODO à enlever, (c'était pour des tests)
+	private int numero;		// Permet de tester
+	private int numero_bis = 0; // Permet de tester
 	private String contenu;
 	private Date date_production;
 	private Date date_envoi;
 	private ArrayList<Date> l_date_retrait = new ArrayList<Date>();
 	private ArrayList<Date> l_date_consommation = new ArrayList<Date>();
-	private int numero_tris;	//TODO à enlever, (c'était pour des tests)
 	private int nbExemplaires;	// Nombre d'exemplaires de ce message produits
 	private int nbConsommateurs = 0; //enregistre le nombre de consommateur essayant de retirer ce message
 	private boolean producteur_endormi = true; //Permet de savoir si le producteur a dépassé synchrone.P() ou non (true si il n'a pas encore dépassé synchrone.P()
@@ -24,14 +23,9 @@ public class MessageX implements Message{
 		this.numero=n;
 		this.contenu=contenu;
 		this.date_production=date;
-		this.numero_bis=0;
-		this.numero_tris=0;
 		this.nbExemplaires = nbExemplaires;
 	}
 	
-	public void set_num (int n){
-		numero_bis=n;
-	}
 	
 	public static String Format_HeureMinuteSeconde(Date date)
 	{
@@ -39,9 +33,6 @@ public class MessageX implements Message{
 	}
 	
 
-	public void set_num2 (int n){
-		numero_tris=n;
-	}
 	
 	public int get_num2()
 	{
@@ -105,21 +96,10 @@ public class MessageX implements Message{
 	{
 
 		nbConsommateurs++;
-		//TODO retirer le syso car il ne sert qu'à tester le bon fonctionnement de la consommation synchrone
-		System.out.println("Il y a "+nbConsommateurs+" consommateurs qui veulent retirer le message "+numero+" ("+nbExemplaires+" exemplaires)");
 
 		return nbConsommateurs == nbExemplaires;
 	}
 	
-	//Réservé aux producteurs, permet d'indiquer au message que le producteur n'est plus coincé dans synchrone.P() (donc plus besoin de le réveiller => voir prodcons.get(...))
-	public void je_me_reveille()
-	{
-		//TODO changer ça en try catch
-		if(Thread.currentThread() instanceof _Consommateur)
-			System.out.println("Je fais un truc interdit !!");
-		
-		producteur_endormi = false;
-	}
 	
 	public boolean getProducteur_endormi()
 	{

@@ -17,7 +17,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		// TODO verifier le type
 		this.tampon=tampon;
 		this.obs= observateur;
 		obs.newConsommateur(this);
@@ -59,14 +58,10 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 				m=(MessageX) tampon.get(this);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				System.out.println("petit probleme1\n");
 				e.printStackTrace();
 			}catch (FinProgExeption e){
 				b=false;
-				System.out.println("je suis dans l'exeption finprog");
 			} catch (Exception e) {
-				System.out.println("petit probleme 2");
 				
 				e.printStackTrace();
 			}
@@ -75,27 +70,22 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				try {
 					obs.retraitMessage(this, m);
 				} catch (ControlException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				je_parle("je viens de get le message : "+m.toString());
 				nbMessage++;
 				temp_attente=this.temp_traitement.next();
 				try {
 					obs.consommationMessage(this, m, temp_attente);
 					sleep(temp_attente);
 				} catch (InterruptedException e) {
-					System.out.println("J'ai pas reussi a attendre ...\n");
 					e.printStackTrace();
 				} catch (ControlException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
 				m.set_date_consommation(new Date());
 			}
 		}
-		System.out.println("Je suis le "+this.toString()+" et je me meurt ... arghhhh\n");
 	}
 	public static int Cons (){
 		return Acteur.typeConsommateur;

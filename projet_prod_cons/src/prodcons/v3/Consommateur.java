@@ -56,30 +56,24 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=(MessageX) tampon.get(this);
-//				m.set_date_retrait(new Date());
 
 				
 			} catch (InterruptedException e) {
-				System.out.println("petit probleme1\n");
 				e.printStackTrace();
 
 			}catch (FinProgExeption e){
-				je_parle("petit probleme 3\n");
 				b= false;
 				
 			} catch (Exception e) {
-				System.out.println("petit probleme2\n");
 				e.printStackTrace();
 				
 			}
-			je_parle(" b= "+ b);
 			if (b&& m!=null){ 
 				try {
 					obs.retraitMessage(this, m);
 				} catch (ControlException e1) {
 					e1.printStackTrace();
 				}
-				je_parle("je viens de get le message : "+m.toString());
 				temp_attente=this.temp_traitement.next();
 				try {
 					obs.consommationMessage(this, m, temp_attente);

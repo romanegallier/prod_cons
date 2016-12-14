@@ -16,7 +16,6 @@ public class ProdCons implements Tampon {
 	private int enAttente;// nombre de message present dans le tampon
 	private int nb_prod_alive;
 	private int  num=0;
-	private int  num2=0;
 	
 	private List<Message> l_messages;
 	
@@ -179,10 +178,6 @@ public class ProdCons implements Tampon {
 
 			System.out.println("  dépôt : " + s_dated+ "    retrait : " + s_dater);
 		}
-		// le delai entre chaque message d'un producteur respecte une loi proba
-		//TODO
-		//pareil pour les consos
-		//TODO
 		System.out.println("fifo : Chaque message a-t-il été retiré dans l'ordre où il a été déposé ?");
 		if(test_fifo_valide) 
 		{

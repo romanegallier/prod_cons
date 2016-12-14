@@ -61,7 +61,6 @@ public class Producteur extends Acteur implements _Producteur  {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ControlException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -70,10 +69,8 @@ public class Producteur extends Acteur implements _Producteur  {
 				tampon.put(this, m);
 				nbMessagesProduits++;
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
 			

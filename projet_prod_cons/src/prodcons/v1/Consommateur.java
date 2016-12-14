@@ -63,13 +63,9 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			
 			
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				je_parle("petit probleme1\n");
-//				e.printStackTrace();
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				je_parle("petit probleme2\n");
+			
 				e.printStackTrace();
 				
 			}

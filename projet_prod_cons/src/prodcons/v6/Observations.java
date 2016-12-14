@@ -6,12 +6,9 @@ import java.util.Date;
 import jus.poc.prodcons.*;
 
 public class Observations {
-	private ArrayList<Message> l;
 	private int init_nb_prod;
 	private int init_nb_conso;
 	private int init_nb_buffers;
-	private int nb_conso;
-	private int nb_prod;
 	private boolean aff=true;
 
 	private ArrayList<Producteur> p;
@@ -22,7 +19,6 @@ public class Observations {
 	private ArrayList<Message> consomme;
 	
 	public  Observations () {
-		l= new ArrayList<Message>();
 		p= new ArrayList<Producteur>();
 		c= new ArrayList<Consommateur>();
 		produit= new ArrayList<Message>();

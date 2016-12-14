@@ -63,7 +63,7 @@ public class ProdCons implements Tampon {
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException, FinProgExeption {
 		notEmpty.P();
 		if (cons_should_die()){
-			notEmpty.V();// peut etre a enlever
+			notEmpty.V();
 			throw new FinProgExeption();
 			
 		}

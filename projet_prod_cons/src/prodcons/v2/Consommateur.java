@@ -53,11 +53,9 @@ public class Consommateur extends Acteur implements _Consommateur  {
 			try {
 			
 				m=(MessageX) tampon.get(this);
-//				m.set_date_retrait(new Date());
 
 				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				System.out.println("petit probleme1\n");
 				e.printStackTrace();
 
@@ -66,7 +64,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				b= false;
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				System.out.println("petit probleme2\n");
 				e.printStackTrace();
 				
@@ -78,7 +75,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 				try {
 					sleep(temp_attente);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

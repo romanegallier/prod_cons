@@ -7,7 +7,6 @@ import jus.poc.prodcons.*;
 public class Producteur extends Acteur implements _Producteur  {
 
 	private int nbMessage;
-	private int nbMessagesProduits;
 	private Aleatoire temp_prod;
 	private Tampon tampon;
 	private Observateur obs;
@@ -19,7 +18,6 @@ public class Producteur extends Acteur implements _Producteur  {
 		
 		super(Acteur.typeProducteur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
 		nbMessage= new Aleatoire(nbMoyenProduction, deviationNbProduction).next();
-		nbMessagesProduits = 0;
 		temp_prod= new Aleatoire(moyenneTempsDeTraitement,deviationTempsDeTraitement);
 		this.tampon=tampon;
 		nbExemplaires = new Aleatoire(nbMoyenExemplaires,deviationNbExemplaires);
@@ -53,7 +51,6 @@ public class Producteur extends Acteur implements _Producteur  {
 	public void run() {
 		((ProdCons) tampon).nv_prod();
 		for (int i=0; i <nbMessage; i++){
-			je_parle("je produis le message "+(i+1) +" sur "+nbMessage +"\n");
 			MessageX m = new MessageX(this, i, "patate", new Date(),nbExemplaires.next());
 			
 			int tempAttente= temp_prod.next();
@@ -63,22 +60,17 @@ public class Producteur extends Acteur implements _Producteur  {
 				obs.productionMessage(this, m, tempAttente);
 				sleep(tempAttente);
 			} catch (InterruptedException e) {
-				System.out.println("J'ai pas reussi a attendre ...\n");
 				e.printStackTrace();
 			} catch (ControlException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			try {
 				obs.depotMessage(this, m);
 				tampon.put(this, m);
-				nbMessagesProduits++;
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			};
 			
@@ -92,13 +84,7 @@ public class Producteur extends Acteur implements _Producteur  {
 	public static int Prod (){
 		return Acteur.typeProducteur;
 	}
-	
-	//A utiliser pour les tests de fin d'execution. permet de savoir si un producteur a produit tous ses messages.
-	public boolean messages_tous_deposes()
-	{
-		return nbMessage==nbMessagesProduits;
-	}
-	
+		
 	
 	public String toString (){
 		return "Producteur "+this.identification();

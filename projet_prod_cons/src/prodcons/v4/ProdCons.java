@@ -99,16 +99,7 @@ public class ProdCons implements Tampon {
 			mutex.V();
 			synchrone.P();
 		}
-/*		mutex.P();
-
-		
-		((MessageX) m).decrNbConsommateurs();
-		if (((MessageX)m).get_nbConsommateurs()<=0){
-			prodSync.V();
-			notFull.V();
-		}
-		mutex.V();   
-*/		return m;
+		return m;
 		
 	}
 
@@ -118,8 +109,6 @@ public class ProdCons implements Tampon {
 		notFull.P();
 		mutex.P();
 		
-		num++;
-		((MessageX)arg1).set_num(num);
 		tampon[index_ecriture]= arg1;
 		t_synchrone[index_ecriture] = new Semaphore(0);
 
@@ -232,10 +221,7 @@ public class ProdCons implements Tampon {
 
 			System.out.println("message n° :" + ((MessageX) m).get_num2() +" ->  dépôt : " + s_dated+ "    retrait : " + s_dater);
 		}
-		// le delai entre chaque message d'un producteur respecte une loi proba
-		//TODO
-		//pareil pour les consos
-		//TODO
+
 		System.out.println("fifo : Chaque message a-t-il été retiré dans l'ordre où il a été déposé ?");
 		if(test_fifo_valide) 
 		{

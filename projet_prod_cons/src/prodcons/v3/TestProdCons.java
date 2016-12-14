@@ -52,7 +52,7 @@ public class TestProdCons  extends Simulateur {
 			}
 			
 			c= new  ArrayList<Consommateur>();
-			for (int i=0;i<=nbCons;i++){
+			for (int i=0;i<nbCons;i++){
 				try {
 					c.add(new Consommateur(obs, tempsMoyenConsommation, deviationTempsMoyenConsommation, tampon));
 				} catch (ControlException e) {
@@ -104,10 +104,14 @@ public class TestProdCons  extends Simulateur {
 			}
 		}
 		
+		boolean tests = false;
+		
 		//A présent, chaque producteur et consommateur a terminé de s'exécuter. On peut effectuer des tests
-
-		((ProdCons) tpd.tampon).tests_temporels(new Date());
-
+		if(tests = true)
+		{
+			//TODO tests !
+			((ProdCons) tpd.tampon).tests_temporels(new Date());
+		}
 	}
 	
 	

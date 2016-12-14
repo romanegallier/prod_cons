@@ -57,7 +57,6 @@ public class Producteur extends Acteur implements _Producteur  {
 	public void run() {
 		((ProdCons) tampon).nv_prod();
 		for (int i=0; i <nbMessage; i++){
-			je_parle("je produis le message "+(i+1) +" sur "+nbMessage +"\n");
 			MessageX m = new MessageX(this, i, "patate", new Date());
 			
 			int tempAttente= temp_prod.next();
