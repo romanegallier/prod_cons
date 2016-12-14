@@ -80,7 +80,6 @@ public class TestProdCons  extends Simulateur {
 			System.out.println(c.get(i).toString());
 			c.get(i).start();
 		}
-		System.out.println(".5341.54.635436843");
 	}
 
 	public static void main(String[] args) {
