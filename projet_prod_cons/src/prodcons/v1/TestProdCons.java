@@ -68,18 +68,16 @@ public class TestProdCons  extends Simulateur {
 			if (p.get(i)==null) System.out.println("petit probleme\n");
 			else System.out.println(p.get(i).toString());
 			p.get(i).start();
-			//b=b && p.get(i).isAlive();
 		}
 		for (int i=0;i<nbCons;i++){
 			System.out.println(c.get(i).toString());
 			c.get(i).start();
 		}
-		System.out.println(".5341.54.635436843");
 	}
 
 	public static void main(String[] args) {
 
-		TestProdCons tpd = new TestProdCons(new Observateur(),"option2.xml");
+		TestProdCons tpd = new TestProdCons(new Observateur(),"option.xml");
 		
 		tpd.start();
 		

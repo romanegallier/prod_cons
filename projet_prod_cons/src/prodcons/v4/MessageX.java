@@ -145,7 +145,7 @@ public class MessageX implements Message{
 		return date_production;
 	}
 	
-	public void set_date_retrait(Date date)
+	public synchronized void set_date_retrait(Date date)
 	{
 		l_date_retrait.add(date);
 	}
@@ -154,9 +154,8 @@ public class MessageX implements Message{
 		return l_date_retrait;
 	}
 	
-	public void set_date_consommation(Date date)
+	public synchronized void set_date_consommation(Date date)
 	{
-		if(date==null) System.out.println("\t\t  EEEEEEEOOOOOOOOO J'AI MIS UNE DATE DE CONSOMMATION NULLEEEEUH");
 		l_date_consommation.add(date);
 	}
 	public ArrayList<Date> get_date_consommation()

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import jus.poc.prodcons.*;
-import prodcons.v3.FinProgExeption;
 
 public class Consommateur extends Acteur implements _Consommateur  {
 
@@ -17,7 +16,6 @@ public class Consommateur extends Acteur implements _Consommateur  {
 	protected Consommateur(Observateur observateur, int moyenneTempsDeTraitement,
 			int deviationTempsDeTraitement, Tampon tampon) throws ControlException {
 		super(Acteur.typeConsommateur, observateur, moyenneTempsDeTraitement, deviationTempsDeTraitement);
-		// TODO verifier le type
 		this.tampon=tampon;
 		this.obs= observateur;
 		this.nbMessage=0;

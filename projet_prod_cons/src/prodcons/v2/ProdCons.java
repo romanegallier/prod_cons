@@ -15,10 +15,9 @@ public class ProdCons implements Tampon {
 	private int index_lecture;// indice de la zone du tampon ou il faut lire
 	private int index_ecriture;// indice de la zone du tamtpon ou il faut ecrire
 	private int enAttente;// nombre de message present dans le tampon
-	//private Condition notEmpty, notFull;
-	private Semaphore notFull;
-	private Semaphore notEmpty;
-	private Semaphore mutex;
+	private Semaphore notFull; //bloquant quand le tampon est plein
+	private Semaphore notEmpty; //bloquant quand le tampon est vide
+	private Semaphore mutex; 
 	
 	private int nb_prod_alive;
 	private int  num=0;
@@ -63,7 +62,7 @@ public class ProdCons implements Tampon {
 	public Message get(_Consommateur arg0) throws Exception, InterruptedException, FinProgExeption {
 		notEmpty.P();
 		if (cons_should_die()){
-			notEmpty.V();// peut etre a enlever
+			notEmpty.V();
 			throw new FinProgExeption();
 			
 		}

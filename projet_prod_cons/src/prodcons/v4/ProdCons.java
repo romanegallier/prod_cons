@@ -22,8 +22,8 @@ public class ProdCons implements Tampon {
 	private Semaphore notFull; //bloque si le tampon est plein
 	private Semaphore notEmpty; // bloque si le tampon est vide
 	private Semaphore mutex; 
-	private Semaphore t_synchrone [];
 	private int nb_prod_alive = 0;
+	private Semaphore t_synchrone [];
 	private Semaphore prodSync;
 
 	
@@ -66,13 +66,8 @@ public class ProdCons implements Tampon {
 	@Override
 	public Message get(_Consommateur arg0) throws FinProgExeption,Exception, InterruptedException {
 
-		
-		if(cons_should_die())
-		{
-			notEmpty.V();
-			throw new FinProgExeption();
-			
-		}
+
+		//déblocage des Consommateurs en attente de dépôt à la fin du programme
 		notEmpty.P(); 
 		if (cons_should_die()){
 			notEmpty.V();
@@ -88,18 +83,24 @@ public class ProdCons implements Tampon {
 		{
 			enAttente --;
 			index_lecture= (index_lecture +1)%taille;
-			synchrone.V();
+
+			for(int i = 0; i < ((MessageX)m).get_nbExemplaires();i++)
+				synchrone.V(); //le dernier Consommateur libère tous les autres consommateurs bloqués pour ce message 
+			
+			((MessageX) m).set_date_retrait(new Date());
+
+			prodSync.V(); //puis le dernier Consommateur libère le producteur
+			notFull.V();
+		
 			mutex.V();
 		}
 		else
 		{
 			mutex.V();
 			synchrone.P();
-			synchrone.V();
 		}
-		mutex.P();
+/*		mutex.P();
 
-		((MessageX) m).set_date_retrait(new Date());
 		
 		((MessageX) m).decrNbConsommateurs();
 		if (((MessageX)m).get_nbConsommateurs()<=0){
@@ -107,13 +108,12 @@ public class ProdCons implements Tampon {
 			notFull.V();
 		}
 		mutex.V();   
-		return m;
+*/		return m;
 		
 	}
 
 	@Override
 	public void put(_Producteur arg0, Message arg1) throws Exception, InterruptedException {
-		Semaphore synchrone = new Semaphore(0);
 		
 		notFull.P();
 		mutex.P();
@@ -121,7 +121,7 @@ public class ProdCons implements Tampon {
 		num++;
 		((MessageX)arg1).set_num(num);
 		tampon[index_ecriture]= arg1;
-		t_synchrone[index_ecriture] = synchrone;
+		t_synchrone[index_ecriture] = new Semaphore(0);
 
 		
 		index_ecriture = (index_ecriture +1)%taille;
@@ -132,9 +132,9 @@ public class ProdCons implements Tampon {
 		mutex.V();
 		for(int i = 0; i < ((MessageX) arg1).get_nbExemplaires(); i++)
 		{
-			notEmpty.V();
+			notEmpty.V(); //On débloque autant de ressources que d'exemplaires
 		}
-		prodSync.P(); 
+		prodSync.P(); //Le producteur se bloque. Il sera débloqué lorsque tous les consommateurs nécessaires seront en mesure de retirer le message
 
 	}
 
@@ -219,9 +219,7 @@ public class ProdCons implements Tampon {
 				System.out.println("***");
 			}
 			
-			
-			//On vérifie que chaque message est consommé avant la fin du programme
-			if(datec==null || date_arret==null) System.out.println("datec = "+datec+" et date_arret = "+date_arret+ " et la longueur de la liste de retrait est : "+((MessageX) m).get_date_consommation().size());
+
 			if(datec.after(date_arret))
 			{
 				test_messages_consommes = false;

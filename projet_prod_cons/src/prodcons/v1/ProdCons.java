@@ -66,7 +66,6 @@ public class ProdCons implements Tampon {
 		index_lecture= (index_lecture+1)%taille;
 		enAttente --;
 		((MessageX) m).set_date_retrait(new Date());
-		((Consommateur) arg0).je_parle("Je get le message " + num2);
 		notifyAll();
 		return m;
 	}
